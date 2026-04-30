@@ -1,0 +1,206 @@
+'use client'
+
+import { useState } from 'react'
+import { toggleCompletion, addHabit, deleteHabit } from './actions'
+
+type Habit = {
+  id: string
+  title: string
+  color: string
+}
+
+type Completion = {
+  habit_id: string
+  date: string
+}
+
+export default function HabitsTable({
+  initialHabits,
+  initialCompletions,
+  dates,
+}: {
+  initialHabits: Habit[]
+  initialCompletions: Completion[]
+  dates: { date: Date; dateString: string; dayName: string; dayNumber: string }[]
+}) {
+  const [habits] = useState<Habit[]>(initialHabits)
+  const [completions, setCompletions] = useState<Completion[]>(initialCompletions)
+  const [isAdding, setIsAdding] = useState(false)
+  const [newHabitTitle, setNewHabitTitle] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const isCompleted = (habitId: string, dateStr: string) => {
+    return completions.some((c) => c.habit_id === habitId && c.date === dateStr)
+  }
+
+  const handleToggle = async (habitId: string, dateStr: string) => {
+    const currentlyCompleted = isCompleted(habitId, dateStr)
+    
+    // Optimistic update
+    if (currentlyCompleted) {
+      setCompletions(completions.filter(c => !(c.habit_id === habitId && c.date === dateStr)))
+    } else {
+      setCompletions([...completions, { habit_id: habitId, date: dateStr }])
+    }
+
+    const { error } = await toggleCompletion(habitId, dateStr, currentlyCompleted)
+    
+    // Revert on error
+    if (error) {
+      if (currentlyCompleted) {
+        setCompletions([...completions, { habit_id: habitId, date: dateStr }])
+      } else {
+        setCompletions(completions.filter(c => !(c.habit_id === habitId && c.date === dateStr)))
+      }
+      alert('Ошибка при сохранении: ' + error)
+    }
+  }
+
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newHabitTitle.trim()) return
+    setLoading(true)
+    const { error } = await addHabit(newHabitTitle.trim())
+    setLoading(false)
+    if (error) {
+      alert('Ошибка: ' + error)
+    } else {
+      setNewHabitTitle('')
+      setIsAdding(false)
+      // The page will revalidate and update the props, but we could also do optimistic update here
+    }
+  }
+
+  const calculateHabitProgress = (habitId: string) => {
+    let completedDays = 0
+    dates.forEach(d => {
+      if (isCompleted(habitId, d.dateString)) completedDays++
+    })
+    return Math.round((completedDays / dates.length) * 100)
+  }
+
+  const calculateTotalProgress = () => {
+    if (habits.length === 0) return 0
+    let totalCompleted = completions.length
+    let totalPossible = habits.length * dates.length
+    return Math.round((totalCompleted / totalPossible) * 100)
+  }
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
+      <div className="flex justify-between items-center p-4 border-b border-slate-200">
+        <h2 className="font-bold text-slate-800">Твои привычки</h2>
+        <button 
+          onClick={() => setIsAdding(!isAdding)}
+          className="flex items-center gap-1 text-sm font-medium text-[var(--color-primary-container)] hover:text-[var(--color-primary)] transition-colors"
+        >
+          <span className="material-symbols-outlined text-[18px]">add</span>
+          Добавить
+        </button>
+      </div>
+
+      <table className="w-full text-left border-collapse min-w-[800px]">
+        <thead>
+          <tr className="bg-slate-50 border-b border-slate-200 text-sm text-slate-500">
+            <th className="py-4 px-6 font-medium w-1/3">Привычка</th>
+            {dates.map((d, i) => (
+              <th key={d.dateString} className={`py-4 px-2 text-center font-medium ${new Date().toISOString().split('T')[0] === d.dateString ? 'text-[var(--color-primary-container)] bg-indigo-50/50' : ''}`}>
+                {d.dayName} {d.dayNumber}
+              </th>
+            ))}
+            <th className="py-4 px-6 text-right font-medium">Прогресс</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-100">
+          {habits.length === 0 && !isAdding ? (
+            <tr>
+              <td colSpan={dates.length + 2} className="py-8 text-center text-slate-500">
+                Нет привычек. Добавь первую привычку, чтобы начать!
+              </td>
+            </tr>
+          ) : null}
+          
+          {habits.map((habit) => (
+            <tr key={habit.id} className="hover:bg-slate-50 transition-colors group">
+              <td className="py-4 px-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full ${habit.color}`}></div>
+                    <span className="font-medium text-slate-700">{habit.title}</span>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      if(confirm('Удалить привычку?')) deleteHabit(habit.id)
+                    }} 
+                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity p-1"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </td>
+              {dates.map((d) => {
+                const checked = isCompleted(habit.id, d.dateString)
+                return (
+                  <td key={d.dateString} className={`py-4 px-2 text-center ${new Date().toISOString().split('T')[0] === d.dateString ? 'bg-indigo-50/20' : ''}`}>
+                    <button 
+                      onClick={() => handleToggle(habit.id, d.dateString)}
+                      className={`w-6 h-6 mx-auto rounded-md flex items-center justify-center transition-colors shadow-sm
+                        ${checked ? 'bg-green-500 hover:bg-green-600 text-white border-transparent' : 'border-2 border-slate-200 bg-white hover:border-slate-300'}`}
+                    >
+                      {checked && <span className="material-symbols-outlined text-[16px] font-bold">check</span>}
+                    </button>
+                  </td>
+                )
+              })}
+              <td className="py-4 px-6">
+                <div className="flex items-center gap-3 justify-end">
+                  <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className={`h-full ${habit.color} rounded-full transition-all duration-500`} style={{ width: `${calculateHabitProgress(habit.id)}%` }}></div>
+                  </div>
+                  <span className="text-sm font-medium text-slate-500 w-8 text-right">{calculateHabitProgress(habit.id)}%</span>
+                </div>
+              </td>
+            </tr>
+          ))}
+
+          {isAdding && (
+            <tr className="bg-slate-50">
+              <td className="py-3 px-6" colSpan={dates.length + 2}>
+                <form onSubmit={handleAdd} className="flex gap-2">
+                  <input 
+                    type="text" 
+                    value={newHabitTitle}
+                    onChange={(e) => setNewHabitTitle(e.target.value)}
+                    placeholder="Название привычки..." 
+                    className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-container)]"
+                    autoFocus
+                  />
+                  <button disabled={loading} type="submit" className="px-4 py-2 bg-[var(--color-primary-container)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary)] transition-colors">
+                    {loading ? 'Добавление...' : 'Сохранить'}
+                  </button>
+                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-100 transition-colors">
+                    Отмена
+                  </button>
+                </form>
+              </td>
+            </tr>
+          )}
+        </tbody>
+        <tfoot className="bg-slate-50 border-t border-slate-200">
+          <tr>
+            <td className="py-4 px-6 font-bold text-slate-800">Итого за неделю:</td>
+            <td colSpan={dates.length}></td>
+            <td className="py-4 px-6">
+              <div className="flex items-center gap-3 justify-end">
+                <div className="w-24 h-2.5 bg-slate-200 rounded-full overflow-hidden shadow-inner">
+                  <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${calculateTotalProgress()}%` }}></div>
+                </div>
+                <span className="text-base font-bold text-green-600 w-9 text-right">{calculateTotalProgress()}%</span>
+              </div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  )
+}
