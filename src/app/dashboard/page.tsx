@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { getHabits, getCompletions } from './actions'
 import HabitsTable from './HabitsTable'
 import Link from 'next/link'
+import WeekPicker from './WeekPicker'
 
 function localDateStr(date: Date): string {
   return [
@@ -91,45 +92,33 @@ export default async function DashboardPage({
     cursor.setDate(cursor.getDate() - 1)
   }
 
-  const prevHref = `/dashboard?week=${weekOffset - 1}`
   const isCurrentWeek = weekOffset === 0
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
-      {/* Top Bar */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            {isCurrentWeek ? `Привет, ${name}!` : `Неделя: ${weekLabel}`}
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">
-            Сегодня: {today.toLocaleDateString('ru-RU')}
-          </p>
-        </div>
+      {/* Greeting — always visible */}
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          Добро пожаловать, {name}!
+        </h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          Сегодня: {today.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}
+        </p>
       </div>
 
       {/* Week Navigation */}
       <div className="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
         <Link
-          href={prevHref}
+          href={`/dashboard?week=${weekOffset - 1}`}
           className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 dark:text-slate-400 transition-colors"
         >
           <span className="material-symbols-outlined">chevron_left</span>
         </Link>
 
-        <div className="font-semibold text-slate-700 dark:text-slate-200 text-sm sm:text-base">
-          {weekLabel}
-        </div>
+        {/* Clickable date label → mini calendar */}
+        <WeekPicker weekOffset={weekOffset} weekLabel={weekLabel} />
 
         <div className="flex items-center gap-2">
-          {!isCurrentWeek && (
-            <Link
-              href="/dashboard"
-              className="px-3 py-1.5 text-sm font-medium bg-indigo-100 dark:bg-indigo-900/40 text-[var(--color-primary-container)] rounded-md hover:bg-indigo-200 dark:hover:bg-indigo-900/60 transition-colors hidden sm:block"
-            >
-              Сегодня
-            </Link>
-          )}
           {weekOffset < 0 ? (
             <Link
               href={`/dashboard?week=${weekOffset + 1}`}
