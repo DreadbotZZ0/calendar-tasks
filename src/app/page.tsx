@@ -1,65 +1,178 @@
+import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 fixed top-0 w-full z-50">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+          <div className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <span className="material-symbols-outlined text-[var(--color-primary-container)]">check_circle</span>
+            Календарь задач
+          </div>
+          <div className="hidden md:flex gap-8 items-center">
+            <a className="text-slate-600 hover:text-slate-900 transition-colors" href="#features">Возможности</a>
+            <a className="text-slate-600 hover:text-slate-900 transition-colors" href="#pricing">Тарифы</a>
+            <a className="text-slate-600 hover:text-slate-900 transition-colors" href="#reviews">Отзывы</a>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link className="text-slate-600 hover:text-slate-900 hidden md:block font-medium" href="/login">Войти</Link>
+            <Link className="bg-[var(--color-primary-container)] text-white hover:bg-[var(--color-primary)] hover:-translate-y-0.5 transition-all duration-200 px-4 py-2 rounded-lg font-medium text-sm" href="/register">
+              Начать бесплатно
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </nav>
+
+      <main className="flex-grow pt-24 pb-20">
+        <section className="max-w-7xl mx-auto px-6 pt-12 lg:pt-20 pb-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="flex flex-col gap-6">
+            <h1 className="text-4xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight">
+              Отслеживай привычки.<br />
+              <span className="text-[var(--color-primary-container)]">Достигай целей.</span>
+            </h1>
+            <p className="text-lg lg:text-xl text-slate-600 max-w-lg leading-relaxed">
+              Простой и красивый трекер привычек. Ставь галочки каждый день и наблюдай за своим прогрессом.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 mt-4">
+              <Link href="/register" className="bg-[var(--color-primary-container)] text-white px-8 py-3.5 rounded-lg font-medium hover:bg-[var(--color-primary)] hover:-translate-y-0.5 transition-all shadow-sm text-center">
+                Начать бесплатно
+              </Link>
+              <Link href="/dashboard" className="bg-white border border-slate-200 text-slate-700 px-8 py-3.5 rounded-lg font-medium hover:bg-slate-50 transition-all text-center">
+                Посмотреть демо
+              </Link>
+            </div>
+          </div>
+          <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-slate-100 bg-white">
+            <img 
+              alt="Habit Tracker Dashboard Mockup" 
+              className="w-full h-full object-cover" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUYh1Q6S7f5K6GXtDkGxOTAEu5DqlyBR4d3Eek2fsBOwPRPEcG2jfXJ_HnnHNbiVUjnCxQnGlEAq3VfkepqSch_8SgAMWQCO_pBr9H9OL-CrdC0iiVjySFC9hzjJuFek-TimN-urHZ1wkrsilnvaUIiMXtire1VMhSUzp-BQoOPDNQBmxi3sL-oj5pCiIlKqc_uX0mSZPjbFdWC2pNVbSdvjziEtO636zhDxp7So4oGi-EvGHfQcg10RjYMOeyZil2UZB3J1IBfaY" 
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          </div>
+        </section>
+
+        <section className="border-y border-slate-200 bg-white py-12">
+          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-200">
+            <div className="pt-6 md:pt-0">
+              <div className="text-3xl font-bold text-slate-900 mb-1">10,000+</div>
+              <div className="text-slate-500 text-sm">пользователей</div>
+            </div>
+            <div className="pt-6 md:pt-0">
+              <div className="text-3xl font-bold text-slate-900 mb-1">1M+</div>
+              <div className="text-slate-500 text-sm">привычек отмечено</div>
+            </div>
+            <div className="pt-6 md:pt-0">
+              <div className="text-3xl font-bold text-slate-900 mb-1">98%</div>
+              <div className="text-slate-500 text-sm">довольных клиентов</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="features" className="max-w-7xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Всё что нужно для продуктивности</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">Инструменты, которые помогут вам сформировать полезные привычки и не сбиться с пути.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mb-6 text-[var(--color-primary-container)]">
+                <span className="material-symbols-outlined">grid_on</span>
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 mb-3">Трекер привычек</h3>
+              <p className="text-slate-600">Наглядная сетка на неделю. Отмечайте выполнение в один клик.</p>
+            </div>
+            <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mb-6 text-[var(--color-primary-container)]">
+                <span className="material-symbols-outlined">bar_chart</span>
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 mb-3">Статистика</h3>
+              <p className="text-slate-600">Подробные графики вашего прогресса. Анализируйте свои успехи.</p>
+            </div>
+            <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mb-6 text-[var(--color-primary-container)]">
+                <span className="material-symbols-outlined">notifications</span>
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 mb-3">Напоминания</h3>
+              <p className="text-slate-600">Не забывайте о важных делах. Настраиваемые уведомления.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing" className="max-w-5xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Тарифы</h2>
+            <p className="text-slate-600">Простые и прозрачные условия для достижения ваших целей.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col">
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Free</h3>
+              <div className="text-4xl font-extrabold text-slate-900 mb-6">0₸<span className="text-base font-normal text-slate-500">/мес</span></div>
+              <ul className="space-y-4 mb-8 flex-grow">
+                <li className="flex items-center gap-3 text-slate-700">
+                  <span className="material-symbols-outlined text-green-500 text-xl">check</span>
+                  До 5 привычек
+                </li>
+                <li className="flex items-center gap-3 text-slate-700">
+                  <span className="material-symbols-outlined text-green-500 text-xl">check</span>
+                  1 месяц истории
+                </li>
+                <li className="flex items-center gap-3 text-slate-700">
+                  <span className="material-symbols-outlined text-green-500 text-xl">check</span>
+                  Базовая статистика
+                </li>
+              </ul>
+              <Link href="/register" className="block text-center w-full py-3 rounded-lg border-2 border-[var(--color-primary-container)] text-[var(--color-primary-container)] font-medium hover:bg-indigo-50 transition-colors">
+                Выбрать
+              </Link>
+            </div>
+            <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-lg flex flex-col relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-[var(--color-primary-container)] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Популярный</div>
+              <h3 className="text-2xl font-bold text-white mb-2">Pro</h3>
+              <div className="text-4xl font-extrabold text-white mb-6">1990₸<span className="text-base font-normal text-slate-400">/мес</span></div>
+              <ul className="space-y-4 mb-8 flex-grow">
+                <li className="flex items-center gap-3 text-slate-300">
+                  <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
+                  Безлимитные привычки
+                </li>
+                <li className="flex items-center gap-3 text-slate-300">
+                  <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
+                  Полная статистика и история
+                </li>
+                <li className="flex items-center gap-3 text-slate-300">
+                  <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
+                  Экспорт данных
+                </li>
+                <li className="flex items-center gap-3 text-slate-300">
+                  <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
+                  Приоритетная поддержка
+                </li>
+              </ul>
+              <Link href="/register?plan=pro" className="block text-center w-full py-3 rounded-lg bg-[var(--color-primary-container)] text-white font-medium hover:bg-[var(--color-primary)] transition-colors">
+                Оформить Pro
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
-    </div>
+
+      <footer className="bg-slate-50 border-t border-slate-200 w-full py-12 mt-auto">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span className="material-symbols-outlined text-[var(--color-primary-container)]">check_circle</span>
+            Календарь задач
+          </div>
+          <div className="flex flex-wrap gap-4 text-sm text-slate-500 md:justify-end">
+            <a className="hover:text-[var(--color-primary-container)] underline underline-offset-4 transition-all duration-200" href="#features">Возможности</a>
+            <a className="hover:text-[var(--color-primary-container)] underline underline-offset-4 transition-all duration-200" href="#pricing">Тарифы</a>
+            <a className="hover:text-[var(--color-primary-container)] underline underline-offset-4 transition-all duration-200" href="#reviews">Отзывы</a>
+            <a className="hover:text-[var(--color-primary-container)] underline underline-offset-4 transition-all duration-200" href="#">Политика конфиденциальности</a>
+          </div>
+          <div className="text-sm text-slate-500 md:col-span-2">
+            © 2026 Календарь задач. Все права защищены.
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }
