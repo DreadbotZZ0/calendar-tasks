@@ -72,24 +72,24 @@ export default async function DashboardPage() {
       {/* Top Bar */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Доброе утро, {name}!</h1>
-          <p className="text-slate-500 mt-1">Сегодня: {new Date().toLocaleDateString('ru-RU')}</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Доброе утро, {name}!</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">Сегодня: {new Date().toLocaleDateString('ru-RU')}</p>
         </div>
       </div>
 
       {/* Week Navigation */}
-      <div className="flex items-center justify-between bg-white p-2 rounded-xl shadow-sm border border-slate-200">
-        <button className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors">
+      <div className="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 dark:text-slate-400 transition-colors">
           <span className="material-symbols-outlined">chevron_left</span>
         </button>
-        <div className="font-semibold text-slate-700">
+        <div className="font-semibold text-slate-700 dark:text-slate-200">
           {weekLabel}
         </div>
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1.5 text-sm font-medium bg-indigo-100 text-[var(--color-primary-container)] rounded-md hover:bg-indigo-200 transition-colors hidden sm:block">
+          <button className="px-3 py-1.5 text-sm font-medium bg-indigo-100 dark:bg-indigo-900/40 text-[var(--color-primary-container)] rounded-md hover:bg-indigo-200 dark:hover:bg-indigo-900/60 transition-colors hidden sm:block">
             Сегодня
           </button>
-          <button className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors">
+          <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 dark:text-slate-400 transition-colors">
             <span className="material-symbols-outlined">chevron_right</span>
           </button>
         </div>
@@ -100,31 +100,31 @@ export default async function DashboardPage() {
 
       {/* Bottom Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-xl">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-xl">
             🔥
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-medium">Текущая серия</p>
-            <p className="text-lg font-bold text-slate-900">{streak} дней</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Текущая серия</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-white">{streak} дней</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-xl">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-xl">
             ⭐
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-medium">Отмечено за неделю</p>
-            <p className="text-lg font-bold text-slate-900">{totalCompleted} галочек</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Отмечено за неделю</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-white">{totalCompleted} галочек</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-xl">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-xl">
             📈
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-medium">Всего привычек</p>
-            <p className="text-lg font-bold text-slate-900">{habits.length}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Всего привычек</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-white">{habits.length}</p>
           </div>
         </div>
       </div>

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #3525cd;
   --color-primary-container: #4f46e5;
@@ -13,5 +15,11 @@
   body {
     background-color: var(--color-background);
     color: var(--color-on-background);
+    @apply transition-colors duration-300;
+  }
+
+  .dark body {
+    --color-background: #0f172a; /* Slate 900 */
+    --color-on-background: #f8fafc; /* Slate 50 */
   }
 }

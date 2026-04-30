@@ -9,17 +9,19 @@ export default async function RegisterPage({
   const message = (await searchParams).message
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div>
-          <Link href="/" className="flex justify-center items-center gap-2 text-slate-900 font-bold text-xl mb-6">
-            <span className="material-symbols-outlined text-[var(--color-primary-container)]">check_circle</span>
-            Календарь задач
-          </Link>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
+          <div className="flex justify-center">
+            <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-2xl">
+              <span className="material-symbols-outlined text-[var(--color-primary-container)] text-3xl">check_circle</span>
+              Календарь задач
+            </div>
+          </div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
             Создать аккаунт
           </h2>
-          <p className="mt-2 text-center text-sm text-slate-600">
+          <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
             Уже есть аккаунт?{' '}
             <Link href="/login" className="font-medium text-[var(--color-primary-container)] hover:text-[var(--color-primary)]">
               Войти
@@ -38,7 +40,7 @@ export default async function RegisterPage({
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-t-md focus:outline-none focus:ring-[var(--color-primary-container)] focus:border-[var(--color-primary-container)] focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-white rounded-t-md focus:outline-none focus:ring-[var(--color-primary-container)] focus:border-[var(--color-primary-container)] focus:z-10 sm:text-sm transition-colors"
                 placeholder="Email адрес"
               />
             </div>
@@ -52,7 +54,8 @@ export default async function RegisterPage({
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-b-md focus:outline-none focus:ring-[var(--color-primary-container)] focus:border-[var(--color-primary-container)] focus:z-10 sm:text-sm"
+                minLength={6}
+                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-white rounded-b-md focus:outline-none focus:ring-[var(--color-primary-container)] focus:border-[var(--color-primary-container)] focus:z-10 sm:text-sm transition-colors"
                 placeholder="Пароль (минимум 6 символов)"
               />
             </div>

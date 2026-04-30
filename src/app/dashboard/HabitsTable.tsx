@@ -87,9 +87,9 @@ export default function HabitsTable({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
-      <div className="flex justify-between items-center p-4 border-b border-slate-200">
-        <h2 className="font-bold text-slate-800">Твои привычки</h2>
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden overflow-x-auto">
+      <div className="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-700">
+        <h2 className="font-bold text-slate-800 dark:text-white">Твои привычки</h2>
         <button 
           onClick={() => setIsAdding(!isAdding)}
           className="flex items-center gap-1 text-sm font-medium text-[var(--color-primary-container)] hover:text-[var(--color-primary)] transition-colors"
@@ -101,17 +101,17 @@ export default function HabitsTable({
 
       <table className="w-full text-left border-collapse min-w-[800px]">
         <thead>
-          <tr className="bg-slate-50 border-b border-slate-200 text-sm text-slate-500">
+          <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
             <th className="py-4 px-6 font-medium w-1/3">Привычка</th>
             {dates.map((d, i) => (
-              <th key={d.dateString} className={`py-4 px-2 text-center font-medium ${new Date().toISOString().split('T')[0] === d.dateString ? 'text-[var(--color-primary-container)] bg-indigo-50/50' : ''}`}>
+              <th key={d.dateString} className={`py-4 px-2 text-center font-medium ${new Date().toISOString().split('T')[0] === d.dateString ? 'text-[var(--color-primary-container)] bg-indigo-50/50 dark:bg-indigo-900/20' : ''}`}>
                 {d.dayName} {d.dayNumber}
               </th>
             ))}
             <th className="py-4 px-6 text-right font-medium">Прогресс</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
           {habits.length === 0 && !isAdding ? (
             <tr>
               <td colSpan={dates.length + 2} className="py-8 text-center text-slate-500">
@@ -121,18 +121,18 @@ export default function HabitsTable({
           ) : null}
           
           {habits.map((habit) => (
-            <tr key={habit.id} className="hover:bg-slate-50 transition-colors group">
+            <tr key={habit.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
               <td className="py-4 px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${habit.color}`}></div>
-                    <span className="font-medium text-slate-700">{habit.title}</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-200">{habit.title}</span>
                   </div>
                   <button 
                     onClick={() => {
                       if(confirm('Удалить привычку?')) deleteHabit(habit.id)
                     }} 
-                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity p-1"
+                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-500 transition-opacity p-1"
                   >
                     <span className="material-symbols-outlined text-[16px]">delete</span>
                   </button>
@@ -141,11 +141,11 @@ export default function HabitsTable({
               {dates.map((d) => {
                 const checked = isCompleted(habit.id, d.dateString)
                 return (
-                  <td key={d.dateString} className={`py-4 px-2 text-center ${new Date().toISOString().split('T')[0] === d.dateString ? 'bg-indigo-50/20' : ''}`}>
+                  <td key={d.dateString} className={`py-4 px-2 text-center ${new Date().toISOString().split('T')[0] === d.dateString ? 'bg-indigo-50/20 dark:bg-indigo-900/10' : ''}`}>
                     <button 
                       onClick={() => handleToggle(habit.id, d.dateString)}
                       className={`w-6 h-6 mx-auto rounded-md flex items-center justify-center transition-colors shadow-sm
-                        ${checked ? 'bg-green-500 hover:bg-green-600 text-white border-transparent' : 'border-2 border-slate-200 bg-white hover:border-slate-300'}`}
+                        ${checked ? 'bg-green-500 hover:bg-green-600 text-white border-transparent' : 'border-2 border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
                     >
                       {checked && <span className="material-symbols-outlined text-[16px] font-bold">check</span>}
                     </button>
@@ -154,7 +154,7 @@ export default function HabitsTable({
               })}
               <td className="py-4 px-6">
                 <div className="flex items-center gap-3 justify-end">
-                  <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="w-24 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                     <div className={`h-full ${habit.color} rounded-full transition-all duration-500`} style={{ width: `${calculateHabitProgress(habit.id)}%` }}></div>
                   </div>
                   <span className="text-sm font-medium text-slate-500 w-8 text-right">{calculateHabitProgress(habit.id)}%</span>
@@ -164,7 +164,7 @@ export default function HabitsTable({
           ))}
 
           {isAdding && (
-            <tr className="bg-slate-50">
+            <tr className="bg-slate-50 dark:bg-slate-800/50">
               <td className="py-3 px-6" colSpan={dates.length + 2}>
                 <form onSubmit={handleAdd} className="flex gap-2">
                   <input 
@@ -172,13 +172,13 @@ export default function HabitsTable({
                     value={newHabitTitle}
                     onChange={(e) => setNewHabitTitle(e.target.value)}
                     placeholder="Название привычки..." 
-                    className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-container)]"
+                    className="flex-1 px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-container)]"
                     autoFocus
                   />
                   <button disabled={loading} type="submit" className="px-4 py-2 bg-[var(--color-primary-container)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary)] transition-colors">
                     {loading ? 'Добавление...' : 'Сохранить'}
                   </button>
-                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-100 transition-colors">
+                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                     Отмена
                   </button>
                 </form>
@@ -186,13 +186,13 @@ export default function HabitsTable({
             </tr>
           )}
         </tbody>
-        <tfoot className="bg-slate-50 border-t border-slate-200">
+        <tfoot className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
           <tr>
-            <td className="py-4 px-6 font-bold text-slate-800">Итого за неделю:</td>
+            <td className="py-4 px-6 font-bold text-slate-800 dark:text-white">Итого за неделю:</td>
             <td colSpan={dates.length}></td>
             <td className="py-4 px-6">
               <div className="flex items-center gap-3 justify-end">
-                <div className="w-24 h-2.5 bg-slate-200 rounded-full overflow-hidden shadow-inner">
+                <div className="w-24 h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden shadow-inner">
                   <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${calculateTotalProgress()}%` }}></div>
                 </div>
                 <span className="text-base font-bold text-green-600 w-9 text-right">{calculateTotalProgress()}%</span>
