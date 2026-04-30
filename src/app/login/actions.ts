@@ -15,7 +15,7 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    return redirect('/login?message=Неверный email или пароль')
+    return redirect('/login?message=' + encodeURIComponent('Неверный email или пароль'))
   }
 
   revalidatePath('/', 'layout')
@@ -33,7 +33,7 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
-    return redirect('/register?message=Ошибка при регистрации: ' + error.message)
+    return redirect('/register?message=' + encodeURIComponent('Ошибка при регистрации: ' + error.message))
   }
 
   revalidatePath('/', 'layout')
