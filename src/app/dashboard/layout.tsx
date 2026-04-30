@@ -73,22 +73,47 @@ export default async function DashboardLayout({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Mobile header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:hidden">
-          <Link href="/" className="flex items-center gap-2 text-slate-900 font-bold text-lg">
+        <header className="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:hidden">
+          <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-lg">
             <span className="material-symbols-outlined text-[var(--color-primary-container)]">check_circle</span>
           </Link>
-          <form action={logout}>
-            <button type="submit" className="p-2 text-slate-500 hover:text-slate-900">
-              <span className="material-symbols-outlined">logout</span>
-            </button>
-          </form>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <form action={logout}>
+              <button type="submit" className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                <span className="material-symbols-outlined">logout</span>
+              </button>
+            </form>
+          </div>
         </header>
 
-        <div className="flex-1 overflow-auto p-4 md:p-8">
+        <div className="flex-1 overflow-auto p-4 md:p-8 pb-24 md:pb-8">
           {children}
         </div>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 pb-safe z-50">
+          <div className="flex justify-around items-center h-16">
+            <Link href="/dashboard" className="flex flex-col items-center justify-center w-full h-full text-[var(--color-primary-container)]">
+              <span className="material-symbols-outlined text-2xl">dashboard</span>
+              <span className="text-[10px] font-medium mt-1">Дашборд</span>
+            </Link>
+            <Link href="/dashboard/habits" className="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-2xl">list_alt</span>
+              <span className="text-[10px] font-medium mt-1">Привычки</span>
+            </Link>
+            <Link href="/dashboard/stats" className="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-2xl">bar_chart</span>
+              <span className="text-[10px] font-medium mt-1">Статистика</span>
+            </Link>
+            <Link href="/dashboard/settings" className="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-2xl">settings</span>
+              <span className="text-[10px] font-medium mt-1">Настройки</span>
+            </Link>
+          </div>
+        </nav>
       </main>
     </div>
   )

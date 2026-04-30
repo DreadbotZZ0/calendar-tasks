@@ -10,6 +10,12 @@ export const metadata: Metadata = {
   description: "Отслеживай свои привычки и достигай целей с нашим удобным трекером.",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

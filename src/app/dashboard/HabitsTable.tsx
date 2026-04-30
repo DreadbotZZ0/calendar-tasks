@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { toggleCompletion, addHabit, deleteHabit } from './actions'
 
 type Habit = {
@@ -28,6 +28,16 @@ export default function HabitsTable({
   const [isAdding, setIsAdding] = useState(false)
   const [newHabitTitle, setNewHabitTitle] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showScrollHint, setShowScrollHint] = useState(true)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const handleScroll = () => setShowScrollHint(el.scrollLeft < 10)
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => el.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const isCompleted = (habitId: string, dateStr: string) => {
     return completions.some((c) => c.habit_id === habitId && c.date === dateStr)
@@ -87,10 +97,10 @@ export default function HabitsTable({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden overflow-x-auto">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden relative">
       <div className="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-700">
         <h2 className="font-bold text-slate-800 dark:text-white">Твои привычки</h2>
-        <button 
+        <button
           onClick={() => setIsAdding(!isAdding)}
           className="flex items-center gap-1 text-sm font-medium text-[var(--color-primary-container)] hover:text-[var(--color-primary)] transition-colors"
         >
@@ -99,16 +109,21 @@ export default function HabitsTable({
         </button>
       </div>
 
+      <div ref={scrollRef} className="overflow-x-auto relative">
+        {showScrollHint && (
+          <div className="md:hidden pointer-events-none absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-white dark:from-slate-800 to-transparent z-10" />
+        )}
+
       <table className="w-full text-left border-collapse min-w-[800px]">
         <thead>
           <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
-            <th className="py-4 px-6 font-medium w-1/3">Привычка</th>
-            {dates.map((d, i) => (
+            <th className="py-4 px-3 md:px-6 font-medium w-1/3">Привычка</th>
+            {dates.map((d) => (
               <th key={d.dateString} className={`py-4 px-2 text-center font-medium ${new Date().toISOString().split('T')[0] === d.dateString ? 'text-[var(--color-primary-container)] bg-indigo-50/50 dark:bg-indigo-900/20' : ''}`}>
                 {d.dayName} {d.dayNumber}
               </th>
             ))}
-            <th className="py-4 px-6 text-right font-medium">Прогресс</th>
+            <th className="py-4 px-3 md:px-6 text-right font-medium">Прогресс</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -122,7 +137,7 @@ export default function HabitsTable({
           
           {habits.map((habit) => (
             <tr key={habit.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
-              <td className="py-4 px-6">
+              <td className="py-4 px-3 md:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${habit.color}`}></div>
@@ -152,7 +167,7 @@ export default function HabitsTable({
                   </td>
                 )
               })}
-              <td className="py-4 px-6">
+              <td className="py-4 px-3 md:px-6">
                 <div className="flex items-center gap-3 justify-end">
                   <div className="w-24 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                     <div className={`h-full ${habit.color} rounded-full transition-all duration-500`} style={{ width: `${calculateHabitProgress(habit.id)}%` }}></div>
@@ -165,7 +180,7 @@ export default function HabitsTable({
 
           {isAdding && (
             <tr className="bg-slate-50 dark:bg-slate-800/50">
-              <td className="py-3 px-6" colSpan={dates.length + 2}>
+              <td className="py-3 px-3 md:px-6" colSpan={dates.length + 2}>
                 <form onSubmit={handleAdd} className="flex gap-2">
                   <input 
                     type="text" 
@@ -201,6 +216,7 @@ export default function HabitsTable({
           </tr>
         </tfoot>
       </table>
+      </div>
     </div>
   )
 }
