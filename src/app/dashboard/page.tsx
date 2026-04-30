@@ -2,25 +2,33 @@ import { createClient } from '@/utils/supabase/server'
 import { getHabits, getCompletions } from './actions'
 import HabitsTable from './HabitsTable'
 
+function localDateStr(date: Date): string {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')
+}
+
 // Helper to get dates for the current week (Monday to Sunday)
 function getCurrentWeekDates() {
   const today = new Date()
   const day = today.getDay()
-  // Adjust so Monday is 0, Sunday is 6
-  const diff = today.getDate() - day + (day === 0 ? -6 : 1) 
-  
-  const monday = new Date(today.setDate(diff))
-  
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1)
+
+  const monday = new Date(today)
+  monday.setDate(diff)
+
   const dates = []
   const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
   const monthNames = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
-  
+
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday)
     d.setDate(monday.getDate() + i)
     dates.push({
       date: d,
-      dateString: d.toISOString().split('T')[0],
+      dateString: localDateStr(d),
       dayName: dayNames[i],
       dayNumber: d.getDate().toString(),
       monthName: monthNames[d.getMonth()]
@@ -48,20 +56,20 @@ export default async function DashboardPage() {
   // Stats calculation
   const totalCompleted = completions.length
   let streak = 0
-  
-  // Calculate streak backwards from today
-  const todayStr = new Date().toISOString().split('T')[0]
-  const allCompletionsForStreak = await getCompletions(
-    new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0], 
-    todayStr
-  )
-  // simple streak calculation (ignoring missing habits for now, just counting days with at least 1 completion)
+
+  const today = new Date()
+  const todayStr = localDateStr(today)
+  const thirtyDaysAgo = new Date(today)
+  thirtyDaysAgo.setDate(today.getDate() - 30)
+
+  const allCompletionsForStreak = await getCompletions(localDateStr(thirtyDaysAgo), todayStr)
   const completedDates = new Set(allCompletionsForStreak.map(c => c.date))
-  let d = new Date()
+
+  const cursor = new Date(today)
   while (true) {
-    if (completedDates.has(d.toISOString().split('T')[0])) {
+    if (completedDates.has(localDateStr(cursor))) {
       streak++
-      d.setDate(d.getDate() - 1)
+      cursor.setDate(cursor.getDate() - 1)
     } else {
       break
     }
@@ -106,7 +114,8 @@ export default async function DashboardPage() {
           </div>
           <div>
             <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Текущая серия</p>
-            <p className="text-lg font-bold text-slate-900 dark:text-white">{streak} дней</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-white">{streak} {streak === 1 ? 'день' : streak < 5 ? 'дня' : 'дней'} подряд</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">прошедших дней</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center gap-4">

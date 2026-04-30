@@ -81,6 +81,22 @@ export async function addHabit(title: string, color: string = 'bg-indigo-500') {
   return { success: true }
 }
 
+export async function updateHabit(habitId: string, title: string, color: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { error } = await supabase
+    .from('habits')
+    .update({ title, color })
+    .match({ id: habitId, user_id: user.id })
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/habits')
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 export async function deleteHabit(habitId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
