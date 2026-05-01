@@ -11,6 +11,18 @@
   --color-primary-fixed-dim: #c3c0ff;
 }
 
+@keyframes pop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.45); }
+  65%  { transform: scale(0.88); }
+  85%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.animate-pop {
+  animation: pop 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
 @layer base {
   body {
     background-color: var(--color-background);

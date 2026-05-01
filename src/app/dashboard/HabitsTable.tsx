@@ -29,6 +29,7 @@ export default function HabitsTable({
 }) {
   const [habits, setHabits] = useState<Habit[]>(initialHabits)
   const [completions, setCompletions] = useState<Completion[]>(initialCompletions)
+  const [popping, setPopping] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     setHabits(initialHabits)
@@ -61,7 +62,13 @@ export default function HabitsTable({
 
   const handleToggle = async (habitId: string, dateStr: string) => {
     const currentlyCompleted = isCompleted(habitId, dateStr)
-    
+
+    if (!currentlyCompleted) {
+      const key = `${habitId}-${dateStr}`
+      setPopping(prev => new Set(prev).add(key))
+      setTimeout(() => setPopping(prev => { const n = new Set(prev); n.delete(key); return n }), 320)
+    }
+
     // Optimistic update
     if (currentlyCompleted) {
       setCompletions(completions.filter(c => !(c.habit_id === habitId && c.date === dateStr)))
@@ -178,10 +185,11 @@ export default function HabitsTable({
                 const checked = isCompleted(habit.id, d.dateString)
                 return (
                   <td key={d.dateString} className={`py-4 px-2 text-center ${new Date().toISOString().split('T')[0] === d.dateString ? 'bg-indigo-50/20 dark:bg-indigo-900/10' : ''}`}>
-                    <button 
+                    <button
                       onClick={() => handleToggle(habit.id, d.dateString)}
                       className={`w-6 h-6 mx-auto rounded-md flex items-center justify-center transition-colors shadow-sm
-                        ${checked ? 'bg-green-500 hover:bg-green-600 text-white border-transparent' : 'border-2 border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
+                        ${checked ? 'bg-green-500 hover:bg-green-600 text-white border-transparent' : 'border-2 border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}
+                        ${popping.has(`${habit.id}-${d.dateString}`) ? 'animate-pop' : ''}`}
                     >
                       {checked && <span className="material-symbols-outlined text-[16px] font-bold">check</span>}
                     </button>
