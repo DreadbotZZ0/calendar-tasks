@@ -93,24 +93,32 @@ export async function activateLicense(licenseKey: string) {
 
   if (existing) return { error: 'Pro уже активирован на этом аккаунте.' }
 
-  const response = await fetch('https://api.gumroad.com/v2/licenses/verify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      product_id: 'f0cLBqj46i4YEcIsv3PhBg==',
-      license_key: licenseKey.trim(),
-      increment_uses_count: 'true',
-    }),
-  })
+  const PRODUCTS = [
+    { permalink: 'oxcbh', plan: 'basic' },
+    { permalink: 'bzynnz', plan: 'pro' },
+  ]
 
-  const result = await response.json()
-
-  if (!result.success) {
-    return { error: 'Недействительный ключ. Проверь правильность ввода.' }
+  let plan: string | null = null
+  for (const product of PRODUCTS) {
+    const res = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        product_permalink: product.permalink,
+        license_key: licenseKey.trim(),
+        increment_uses_count: 'true',
+      }),
+    })
+    const result = await res.json()
+    if (result.success) {
+      plan = product.plan
+      break
+    }
   }
 
-  const variants: string = result.purchase?.variants ?? ''
-  const plan = variants.toLowerCase().includes('pro') ? 'pro' : 'basic'
+  if (!plan) {
+    return { error: 'Недействительный ключ. Проверь правильность ввода.' }
+  }
 
   const { error } = await supabase
     .from('licenses')
