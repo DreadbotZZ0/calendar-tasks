@@ -144,7 +144,7 @@ export default function HabitsTable({
           <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
             <th className="py-4 px-3 md:px-6 font-medium w-1/3">Привычка</th>
             {dates.map((d) => (
-              <th key={d.dateString} className={`py-4 px-2 text-center font-medium ${new Date().toISOString().split('T')[0] === d.dateString ? 'text-[var(--color-primary-container)] bg-indigo-50/50 dark:bg-indigo-900/20' : ''}`}>
+              <th key={d.dateString} className={`py-4 px-2 text-center font-medium ${new Date().toLocaleDateString('en-CA') === d.dateString ? 'text-[var(--color-primary-container)] bg-indigo-50/50 dark:bg-indigo-900/20' : ''}`}>
                 {d.dayName} {d.dayNumber}
               </th>
             ))}
@@ -184,7 +184,7 @@ export default function HabitsTable({
               {dates.map((d) => {
                 const checked = isCompleted(habit.id, d.dateString)
                 return (
-                  <td key={d.dateString} className={`py-4 px-2 text-center ${new Date().toISOString().split('T')[0] === d.dateString ? 'bg-indigo-50/20 dark:bg-indigo-900/10' : ''}`}>
+                  <td key={d.dateString} className={`py-4 px-2 text-center ${new Date().toLocaleDateString('en-CA') === d.dateString ? 'bg-indigo-50/20 dark:bg-indigo-900/10' : ''}`}>
                     <button
                       onClick={() => handleToggle(habit.id, d.dateString)}
                       className={`w-6 h-6 mx-auto rounded-md flex items-center justify-center transition-colors shadow-sm

@@ -4,16 +4,20 @@ import HabitsTable from './HabitsTable'
 import Link from 'next/link'
 import WeekPicker from './WeekPicker'
 
+const TZ = 'Asia/Almaty'
+
 function localDateStr(date: Date): string {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, '0'),
-    String(date.getDate()).padStart(2, '0'),
-  ].join('-')
+  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(date)
+}
+
+// Returns a Date whose .getDate()/.getMonth()/.getFullYear() match today in Almaty
+function todayInTZ(): Date {
+  const str = localDateStr(new Date())
+  return new Date(str + 'T00:00:00')
 }
 
 function getWeekDates(weekOffset: number) {
-  const today = new Date()
+  const today = todayInTZ()
   const day = today.getDay()
   const diff = today.getDate() - day + (day === 0 ? -6 : 1)
 
@@ -77,7 +81,7 @@ export default async function DashboardPage({
   const totalCompleted = completions.length
 
   // Streak always from today backwards (not from viewed week)
-  const today = new Date()
+  const today = todayInTZ()
   const todayStr = localDateStr(today)
   const thirtyDaysAgo = new Date(today)
   thirtyDaysAgo.setDate(today.getDate() - 30)
@@ -109,7 +113,7 @@ export default async function DashboardPage({
           Добро пожаловать, {name}!
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mt-1">
-          Сегодня: {today.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}
+          Сегодня: {new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ })}
         </p>
       </div>
 
