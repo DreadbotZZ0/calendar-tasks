@@ -45,10 +45,10 @@ export default function Home() {
             </div>
           </div>
           <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800">
-            <img 
-              alt="Habit Tracker Dashboard Mockup" 
-              className="w-full h-full object-cover" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUYh1Q6S7f5K6GXtDkGxOTAEu5DqlyBR4d3Eek2fsBOwPRPEcG2jfXJ_HnnHNbiVUjnCxQnGlEAq3VfkepqSch_8SgAMWQCO_pBr9H9OL-CrdC0iiVjySFC9hzjJuFek-TimN-urHZ1wkrsilnvaUIiMXtire1VMhSUzp-BQoOPDNQBmxi3sL-oj5pCiIlKqc_uX0mSZPjbFdWC2pNVbSdvjziEtO636zhDxp7So4oGi-EvGHfQcg10RjYMOeyZil2UZB3J1IBfaY" 
+            <img
+              alt="Календарь задач — дашборд"
+              className="w-full h-full object-cover object-top"
+              src="/dashboard-preview.png"
             />
           </div>
         </section>
