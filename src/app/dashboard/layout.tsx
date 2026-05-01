@@ -5,9 +5,8 @@ import { logout } from '@/app/login/actions'
 import ThemeToggle from '@/components/ThemeToggle'
 import { SidebarNav, BottomNav } from './Navigation'
 import PaywallWrapper from './PaywallWrapper'
+import SidebarUpgradeButton from './SidebarUpgradeButton'
 
-const GUMROAD_BASIC = 'https://aronfatima.gumroad.com/l/oxcbh'
-const GUMROAD_PRO = 'https://aronfatima.gumroad.com/l/bzynnz'
 
 export default async function DashboardLayout({
   children,
@@ -61,16 +60,7 @@ export default async function DashboardLayout({
               Выйти
             </button>
           </form>
-          {!isPro && (
-            <a
-              href={hasSubscription ? GUMROAD_PRO : GUMROAD_BASIC}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mt-2 py-2 text-sm font-medium text-white bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] rounded-lg transition-colors shadow-sm flex items-center justify-center gap-1"
-            >
-              {hasSubscription ? 'Перейти на Pro' : 'Приобрести подписку'}
-            </a>
-          )}
+          <SidebarUpgradeButton hasSubscription={hasSubscription} isPro={isPro} />
         </div>
       </aside>
 

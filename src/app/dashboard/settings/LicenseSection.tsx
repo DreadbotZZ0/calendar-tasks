@@ -48,10 +48,7 @@ export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?:
   return (
     <div className="space-y-3">
       <p className="text-sm text-slate-600 dark:text-slate-400">
-        <a href="https://aronfatima.gumroad.com/l/bzynnz" target="_blank" rel="noopener noreferrer" className="text-[var(--color-primary-container)] underline hover:opacity-80">
-          Купи Pro на Gumroad
-        </a>
-        {' '}и введи полученный ключ ниже.
+        После покупки подписки введите полученный ключ ниже.
       </p>
       <form onSubmit={handleActivate} className="flex gap-2">
         <input
