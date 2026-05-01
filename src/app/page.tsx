@@ -44,10 +44,10 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800">
+          <div className="relative w-full rounded-xl overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.2)] border border-slate-200 dark:border-slate-700">
             <img
               alt="Календарь задач — дашборд"
-              className="w-full h-full object-cover object-top"
+              className="w-full h-auto block"
               src="/dashboard-preview.png"
             />
           </div>

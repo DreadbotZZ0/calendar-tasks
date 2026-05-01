@@ -87,21 +87,23 @@ export default async function DashboardPage({
   thirtyDaysAgo.setDate(today.getDate() - 30)
 
   const allCompletionsForStreak = await getCompletions(localDateStr(thirtyDaysAgo), todayStr)
-  const completedDates = new Set(allCompletionsForStreak.map(c => c.date))
 
-  let streak = 0
-  const cursor = new Date(today)
-  
-  // Если сегодня еще не отмечено, проверяем, была ли отметка вчера.
-  // Серия не прерывается, пока не пропущен весь сегодняшний день.
-  if (!completedDates.has(localDateStr(cursor))) {
-    cursor.setDate(cursor.getDate() - 1)
+  // Per-habit streak calculation
+  function calcStreak(habitId: string): number {
+    const dates = new Set(
+      allCompletionsForStreak.filter(c => c.habit_id === habitId).map(c => c.date)
+    )
+    let s = 0
+    const cur = new Date(today)
+    if (!dates.has(localDateStr(cur))) cur.setDate(cur.getDate() - 1)
+    while (dates.has(localDateStr(cur))) { s++; cur.setDate(cur.getDate() - 1) }
+    return s
   }
 
-  while (completedDates.has(localDateStr(cursor))) {
-    streak++
-    cursor.setDate(cursor.getDate() - 1)
-  }
+  const habitStreaks: Record<string, number> = {}
+  for (const h of habits) habitStreaks[h.id] = calcStreak(h.id)
+
+  const maxStreak = habits.length > 0 ? Math.max(...Object.values(habitStreaks)) : 0
 
   const isCurrentWeek = weekOffset === 0
 
@@ -146,7 +148,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Habit Tracker Table */}
-      <HabitsTable initialHabits={habits} initialCompletions={completions} dates={dates} />
+      <HabitsTable initialHabits={habits} initialCompletions={completions} dates={dates} habitStreaks={habitStreaks} />
 
       {/* Bottom Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -155,11 +157,11 @@ export default async function DashboardPage({
             🔥
           </div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Текущая серия</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Макс. серия</p>
             <p className="text-lg font-bold text-slate-900 dark:text-white">
-              {streak} {streak === 1 ? 'день' : streak < 5 ? 'дня' : 'дней'} подряд
+              {maxStreak} {maxStreak === 1 ? 'день' : maxStreak < 5 ? 'дня' : 'дней'} подряд
             </p>
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">прошедших дней</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">лучшая привычка</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center gap-4">

@@ -22,10 +22,12 @@ export default function HabitsTable({
   initialHabits,
   initialCompletions,
   dates,
+  habitStreaks = {},
 }: {
   initialHabits: Habit[]
   initialCompletions: Completion[]
   dates: { date: Date; dateString: string; dayName: string; dayNumber: string }[]
+  habitStreaks?: Record<string, number>
 }) {
   const [habits, setHabits] = useState<Habit[]>(initialHabits)
   const [completions, setCompletions] = useState<Completion[]>(initialCompletions)
@@ -170,6 +172,11 @@ export default function HabitsTable({
                       {habit.emoji && <span className="mr-2">{habit.emoji}</span>}
                       {habit.title}
                     </span>
+                    {(habitStreaks[habit.id] ?? 0) > 0 && (
+                      <span className="flex items-center gap-0.5 text-xs font-semibold text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 rounded-full shrink-0">
+                        🔥{habitStreaks[habit.id]}
+                      </span>
+                    )}
                   </div>
                   <button 
                     onClick={() => {
