@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { logout } from '@/app/login/actions'
 import ThemeToggle from '@/components/ThemeToggle'
 import { SidebarNav, BottomNav } from './Navigation'
+import Paywall from './Paywall'
+
+const GUMROAD_URL = 'https://aronfatima.gumroad.com/l/bzynnz'
 
 export default async function DashboardLayout({
   children,
@@ -13,12 +16,19 @@ export default async function DashboardLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) redirect('/login')
 
-  // extract name from email for avatar placeholder
   const name = user.email?.split('@')[0] || 'User'
+
+  const { data: license } = await supabase
+    .from('licenses')
+    .select('plan')
+    .eq('user_id', user.id)
+    .single()
+
+  const hasSubscription = !!license
+  const isPro = license?.plan === 'pro'
+  const planLabel = isPro ? 'Pro' : hasSubscription ? 'Базовый' : 'Нет подписки'
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--color-background)] dark:bg-slate-900">
@@ -30,7 +40,7 @@ export default async function DashboardLayout({
             Календарь задач
           </Link>
         </div>
-        
+
         <SidebarNav />
 
         <div className="p-4 border-t border-slate-200 dark:border-slate-700">
@@ -40,7 +50,7 @@ export default async function DashboardLayout({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{name}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Базовый план</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{planLabel}</p>
             </div>
             <ThemeToggle />
           </div>
@@ -50,9 +60,16 @@ export default async function DashboardLayout({
               Выйти
             </button>
           </form>
-          <a href="https://aronfatima.gumroad.com/l/bzynnz" target="_blank" rel="noopener noreferrer" className="w-full mt-2 py-2 text-sm font-medium text-white bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] rounded-lg transition-colors shadow-sm flex items-center justify-center gap-1">
-            Перейти на Pro
-          </a>
+          {!isPro && (
+            <a
+              href={GUMROAD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mt-2 py-2 text-sm font-medium text-white bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] rounded-lg transition-colors shadow-sm flex items-center justify-center gap-1"
+            >
+              {hasSubscription ? 'Перейти на Pro' : 'Приобрести подписку'}
+            </a>
+          )}
         </div>
       </aside>
 
@@ -77,9 +94,11 @@ export default async function DashboardLayout({
           {children}
         </div>
 
-        {/* Mobile Bottom Navigation */}
         <BottomNav />
       </main>
+
+      {/* Paywall overlay for users without subscription */}
+      {!hasSubscription && <Paywall />}
     </div>
   )
 }

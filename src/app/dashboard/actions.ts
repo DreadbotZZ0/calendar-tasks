@@ -109,9 +109,12 @@ export async function activateLicense(licenseKey: string) {
     return { error: 'Недействительный ключ. Проверь правильность ввода.' }
   }
 
+  const variants: string = result.purchase?.variants ?? ''
+  const plan = variants.toLowerCase().includes('pro') ? 'pro' : 'basic'
+
   const { error } = await supabase
     .from('licenses')
-    .insert({ user_id: user.id, license_key: licenseKey.trim() })
+    .insert({ user_id: user.id, license_key: licenseKey.trim(), plan })
 
   if (error) return { error: error.message }
 
@@ -125,22 +128,25 @@ export async function addHabit(title: string, color: string = 'bg-indigo-500', e
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  // Pro users have no limit
   const { data: license } = await supabase
     .from('licenses')
-    .select('id')
+    .select('plan')
     .eq('user_id', user.id)
     .single()
 
   if (!license) {
+    return { error: 'Требуется подписка. Приобрети план для добавления привычек.' }
+  }
+
+  if (license.plan !== 'pro') {
     const { count, error: countError } = await supabase
       .from('habits')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', user.id)
 
     if (countError) return { error: countError.message }
-    if (count !== null && count >= 8) {
-      return { error: 'В Базовом тарифе доступно максимум 8 привычек. Активируй Pro для безлимитного доступа.' }
+    if (count !== null && count >= 5) {
+      return { error: 'В Базовом плане доступно до 5 привычек. Перейди на Pro для безлимитного доступа.' }
     }
   }
 

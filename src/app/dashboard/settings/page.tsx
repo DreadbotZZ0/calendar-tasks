@@ -63,7 +63,7 @@ export default async function SettingsPage() {
         {!isPro && (
           <p className="text-sm text-slate-500 dark:text-slate-400">До 8 привычек · 1 месяц истории</p>
         )}
-        <LicenseSection isPro={isPro} />
+        <LicenseSection isPro={isPro} plan={license?.plan ?? undefined} />
       </div>
 
       {/* Danger zone */}

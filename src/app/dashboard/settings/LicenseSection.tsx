@@ -3,21 +3,29 @@
 import { useState } from 'react'
 import { activateLicense } from '../actions'
 
-export default function LicenseSection({ isPro }: { isPro: boolean }) {
+export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?: string }) {
   const [key, setKey] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
-  if (isPro || success) {
+  const activePlan = success ? 'activated' : plan
+  const isActivated = isPro || !!activePlan
+
+  if (isActivated) {
+    const isProPlan = activePlan === 'pro' || isPro
     return (
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
           <span className="material-symbols-outlined text-green-500 text-[18px]">verified</span>
         </div>
         <div>
-          <p className="font-semibold text-green-600 dark:text-green-400">Pro активирован</p>
-          <p className="text-xs text-slate-400 dark:text-slate-500">Безлимитные привычки · полная история</p>
+          <p className="font-semibold text-green-600 dark:text-green-400">
+            {isProPlan ? 'Pro активирован' : 'Базовый план активирован'}
+          </p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">
+            {isProPlan ? 'Безлимитные привычки · полная история' : 'До 5 привычек · 1 месяц истории'}
+          </p>
         </div>
       </div>
     )
