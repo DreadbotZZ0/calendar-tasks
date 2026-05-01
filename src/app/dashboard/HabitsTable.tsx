@@ -27,8 +27,17 @@ export default function HabitsTable({
   initialCompletions: Completion[]
   dates: { date: Date; dateString: string; dayName: string; dayNumber: string }[]
 }) {
-  const [habits] = useState<Habit[]>(initialHabits)
+  const [habits, setHabits] = useState<Habit[]>(initialHabits)
   const [completions, setCompletions] = useState<Completion[]>(initialCompletions)
+
+  useEffect(() => {
+    setHabits(initialHabits)
+  }, [initialHabits])
+
+  useEffect(() => {
+    setCompletions(initialCompletions)
+  }, [initialCompletions])
+
   const [isAdding, setIsAdding] = useState(false)
   const [newHabitTitle, setNewHabitTitle] = useState('')
   const [newHabitEmoji, setNewHabitEmoji] = useState<string | null>(null)

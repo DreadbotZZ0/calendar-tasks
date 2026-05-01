@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { addHabit, updateHabit, deleteHabit } from '../actions'
 
 import EmojiPicker, { Theme } from 'emoji-picker-react'
@@ -28,6 +28,10 @@ const COLORS = [
 
 export default function HabitsManager({ initialHabits }: { initialHabits: Habit[] }) {
   const [habits, setHabits] = useState<Habit[]>(initialHabits)
+
+  useEffect(() => {
+    setHabits(initialHabits)
+  }, [initialHabits])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editColor, setEditColor] = useState('')
@@ -86,8 +90,6 @@ export default function HabitsManager({ initialHabits }: { initialHabits: Habit[
     setNewColor('bg-indigo-500')
     setNewEmoji(null)
     setIsAdding(false)
-    // revalidate will refresh
-    window.location.reload()
   }
 
   return (
