@@ -10,7 +10,6 @@ export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?:
   const [upgradedToPro, setUpgradedToPro] = useState(false)
 
   const isBasic = !isPro && plan === 'basic'
-  const showProForm = isBasic && !upgradedToPro
 
   const handleActivate = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -62,14 +61,6 @@ export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?:
           <p className="text-xs text-slate-500 dark:text-slate-400">
             После покупки Pro на Gumroad введите полученный ключ ниже.
           </p>
-          <a
-            href="https://aronfatima.gumroad.com/l/bzynnz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-[var(--color-primary-container)] underline hover:opacity-80"
-          >
-            Купить Pro ($2/мес) →
-          </a>
           <form onSubmit={handleActivate} className="flex gap-2">
             <input
               value={key}
