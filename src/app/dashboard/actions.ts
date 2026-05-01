@@ -87,11 +87,11 @@ export async function activateLicense(licenseKey: string) {
 
   const { data: existing } = await supabase
     .from('licenses')
-    .select('id')
+    .select('id, plan')
     .eq('user_id', user.id)
     .single()
 
-  if (existing) return { error: 'Pro уже активирован на этом аккаунте.' }
+  if (existing?.plan === 'pro') return { error: 'Pro уже активирован на этом аккаунте.' }
 
   const PRODUCTS = [
     { product_id: '2jcg5ZAW32iLGtkfMe8ZPA==', plan: 'basic' },
@@ -120,9 +120,9 @@ export async function activateLicense(licenseKey: string) {
     return { error: 'Недействительный ключ. Проверь правильность ввода.' }
   }
 
-  const { error } = await supabase
-    .from('licenses')
-    .insert({ user_id: user.id, license_key: licenseKey.trim(), plan })
+  const { error } = existing
+    ? await supabase.from('licenses').update({ license_key: licenseKey.trim(), plan }).eq('id', existing.id)
+    : await supabase.from('licenses').insert({ user_id: user.id, license_key: licenseKey.trim(), plan })
 
   if (error) return { error: error.message }
 
