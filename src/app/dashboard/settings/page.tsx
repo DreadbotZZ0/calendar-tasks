@@ -53,11 +53,11 @@ export default async function SettingsPage() {
         <h2 className="font-semibold text-slate-800 dark:text-white text-sm uppercase tracking-wide">Тариф</h2>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-slate-800 dark:text-slate-200 font-medium">Free план</p>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">До 5 привычек · 1 месяц истории</p>
+            <p className="text-slate-800 dark:text-slate-200 font-medium">Базовый план</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">До 8 привычек · 1 месяц истории</p>
           </div>
           <button className="px-4 py-2 bg-[var(--color-primary-container)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary)] transition-colors">
-            Upgrade to Pro
+            Перейти на Pro
           </button>
         </div>
       </div>

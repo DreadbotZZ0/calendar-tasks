@@ -40,7 +40,7 @@ export default async function DashboardLayout({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{name}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Free план</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Базовый план</p>
             </div>
             <ThemeToggle />
           </div>

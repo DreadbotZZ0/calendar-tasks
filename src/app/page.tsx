@@ -109,12 +109,12 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col transition-colors duration-300">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Free</h3>
-              <div className="text-4xl font-extrabold text-slate-900 dark:text-white mb-6">0₸<span className="text-base font-normal text-slate-500 dark:text-slate-400">/мес</span></div>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Базовый</h3>
+              <div className="text-4xl font-extrabold text-slate-900 dark:text-white mb-6">1990₸<span className="text-base font-normal text-slate-500 dark:text-slate-400">/мес</span></div>
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex items-center gap-3 text-slate-700 dark:text-slate-300">
                   <span className="material-symbols-outlined text-green-500 text-xl">check</span>
-                  До 5 привычек
+                  До 8 привычек
                 </li>
                 <li className="flex items-center gap-3 text-slate-700 dark:text-slate-300">
                   <span className="material-symbols-outlined text-green-500 text-xl">check</span>
@@ -132,7 +132,7 @@ export default function Home() {
             <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-lg flex flex-col relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-[var(--color-primary-container)] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Популярный</div>
               <h3 className="text-2xl font-bold text-white mb-2">Pro</h3>
-              <div className="text-4xl font-extrabold text-white mb-6">1990₸<span className="text-base font-normal text-slate-400">/мес</span></div>
+              <div className="text-4xl font-extrabold text-white mb-6">4990₸<span className="text-base font-normal text-slate-400">/мес</span></div>
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>

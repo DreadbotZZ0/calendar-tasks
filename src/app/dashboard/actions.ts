@@ -71,6 +71,17 @@ export async function addHabit(title: string, color: string = 'bg-indigo-500', e
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  // Check limits
+  const { count, error: countError } = await supabase
+    .from('habits')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+
+  if (countError) return { error: countError.message }
+  if (count !== null && count >= 8) {
+    return { error: 'В Базовом тарифе доступно максимум 8 привычек. Пожалуйста, обновитесь до Pro.' }
+  }
+
   const { error } = await supabase
     .from('habits')
     .insert({ title, color, emoji, user_id: user.id })
