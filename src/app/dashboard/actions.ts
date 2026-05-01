@@ -120,9 +120,9 @@ export async function activateLicense(licenseKey: string) {
     return { error: 'Недействительный ключ. Проверь правильность ввода.' }
   }
 
-  const { error } = existing
-    ? await supabase.from('licenses').update({ license_key: licenseKey.trim(), plan }).eq('id', existing.id)
-    : await supabase.from('licenses').insert({ user_id: user.id, license_key: licenseKey.trim(), plan })
+  const { error } = await supabase
+    .from('licenses')
+    .upsert({ user_id: user.id, license_key: licenseKey.trim(), plan }, { onConflict: 'user_id' })
 
   if (error) return { error: error.message }
 
