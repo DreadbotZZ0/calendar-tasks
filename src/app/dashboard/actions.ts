@@ -66,14 +66,14 @@ export async function toggleCompletion(habitId: string, date: string, isComplete
   return { success: true }
 }
 
-export async function addHabit(title: string, color: string = 'bg-indigo-500') {
+export async function addHabit(title: string, color: string = 'bg-indigo-500', emoji: string | null = null) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
   const { error } = await supabase
     .from('habits')
-    .insert({ title, color, user_id: user.id })
+    .insert({ title, color, emoji, user_id: user.id })
 
   if (error) return { error: error.message }
 
@@ -81,14 +81,14 @@ export async function addHabit(title: string, color: string = 'bg-indigo-500') {
   return { success: true }
 }
 
-export async function updateHabit(habitId: string, title: string, color: string) {
+export async function updateHabit(habitId: string, title: string, color: string, emoji: string | null = null) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
   const { error } = await supabase
     .from('habits')
-    .update({ title, color })
+    .update({ title, color, emoji })
     .match({ id: habitId, user_id: user.id })
 
   if (error) return { error: error.message }

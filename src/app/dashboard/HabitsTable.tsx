@@ -3,10 +3,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { toggleCompletion, addHabit, deleteHabit } from './actions'
 
+import EmojiPicker, { Theme } from 'emoji-picker-react'
+import { useTheme } from 'next-themes'
+
 type Habit = {
   id: string
   title: string
   color: string
+  emoji?: string | null
 }
 
 type Completion = {
@@ -27,9 +31,12 @@ export default function HabitsTable({
   const [completions, setCompletions] = useState<Completion[]>(initialCompletions)
   const [isAdding, setIsAdding] = useState(false)
   const [newHabitTitle, setNewHabitTitle] = useState('')
+  const [newHabitEmoji, setNewHabitEmoji] = useState<string | null>(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showScrollHint, setShowScrollHint] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
     const el = scrollRef.current
@@ -70,12 +77,14 @@ export default function HabitsTable({
     e.preventDefault()
     if (!newHabitTitle.trim()) return
     setLoading(true)
-    const { error } = await addHabit(newHabitTitle.trim())
+    const { error } = await addHabit(newHabitTitle.trim(), 'bg-indigo-500', newHabitEmoji)
     setLoading(false)
     if (error) {
       alert('Ошибка: ' + error)
     } else {
       setNewHabitTitle('')
+      setNewHabitEmoji(null)
+      setShowEmojiPicker(false)
       setIsAdding(false)
       // The page will revalidate and update the props, but we could also do optimistic update here
     }
@@ -140,8 +149,11 @@ export default function HabitsTable({
               <td className="py-4 px-3 md:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${habit.color}`}></div>
-                    <span className="font-medium text-slate-700 dark:text-slate-200">{habit.title}</span>
+                    <div className={`w-3 h-3 rounded-full ${habit.color} shrink-0`}></div>
+                    <span className="font-medium text-slate-700 dark:text-slate-200">
+                      {habit.emoji && <span className="mr-2">{habit.emoji}</span>}
+                      {habit.title}
+                    </span>
                   </div>
                   <button 
                     onClick={() => {
@@ -181,7 +193,27 @@ export default function HabitsTable({
           {isAdding && (
             <tr className="bg-slate-50 dark:bg-slate-800/50">
               <td className="py-3 px-3 md:px-6" colSpan={dates.length + 2}>
-                <form onSubmit={handleAdd} className="flex gap-2">
+                <form onSubmit={handleAdd} className="flex gap-2 relative">
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                      className="h-full px-3 py-2 flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
+                    >
+                      {newHabitEmoji || '😊'}
+                    </button>
+                    {showEmojiPicker && (
+                      <div className="absolute top-full left-0 mt-2 z-50 shadow-xl">
+                        <EmojiPicker 
+                          theme={resolvedTheme === 'dark' ? Theme.DARK : Theme.LIGHT}
+                          onEmojiClick={(e) => {
+                            setNewHabitEmoji(e.emoji)
+                            setShowEmojiPicker(false)
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
                   <input 
                     type="text" 
                     value={newHabitTitle}
@@ -193,7 +225,7 @@ export default function HabitsTable({
                   <button disabled={loading} type="submit" className="px-4 py-2 bg-[var(--color-primary-container)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary)] transition-colors">
                     {loading ? 'Добавление...' : 'Сохранить'}
                   </button>
-                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                  <button type="button" onClick={() => { setIsAdding(false); setShowEmojiPicker(false); setNewHabitEmoji(null); }} className="px-4 py-2 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                     Отмена
                   </button>
                 </form>

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { logout } from '@/app/login/actions'
 import ThemeToggle from '@/components/ThemeToggle'
+import { SidebarNav, BottomNav } from './Navigation'
 
 export default async function DashboardLayout({
   children,
@@ -30,24 +31,7 @@ export default async function DashboardLayout({
           </Link>
         </div>
         
-        <nav className="flex-1 py-6 px-3 space-y-1">
-          <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-[var(--color-primary-container)] rounded-lg font-medium border-l-4 border-[var(--color-primary-container)]">
-            <span className="material-symbols-outlined">dashboard</span>
-            Дашборд
-          </Link>
-          <Link href="/dashboard/habits" className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white rounded-lg font-medium border-l-4 border-transparent">
-            <span className="material-symbols-outlined">list_alt</span>
-            Привычки
-          </Link>
-          <Link href="/dashboard/stats" className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white rounded-lg font-medium border-l-4 border-transparent">
-            <span className="material-symbols-outlined">bar_chart</span>
-            Статистика
-          </Link>
-          <Link href="/dashboard/settings" className="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white rounded-lg font-medium border-l-4 border-transparent">
-            <span className="material-symbols-outlined">settings</span>
-            Настройки
-          </Link>
-        </nav>
+        <SidebarNav />
 
         <div className="p-4 border-t border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3 mb-4">
@@ -94,26 +78,7 @@ export default async function DashboardLayout({
         </div>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 pb-safe z-50">
-          <div className="flex justify-around items-center h-16">
-            <Link href="/dashboard" className="flex flex-col items-center justify-center w-full h-full text-[var(--color-primary-container)]">
-              <span className="material-symbols-outlined text-2xl">dashboard</span>
-              <span className="text-[10px] font-medium mt-1">Дашборд</span>
-            </Link>
-            <Link href="/dashboard/habits" className="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
-              <span className="material-symbols-outlined text-2xl">list_alt</span>
-              <span className="text-[10px] font-medium mt-1">Привычки</span>
-            </Link>
-            <Link href="/dashboard/stats" className="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
-              <span className="material-symbols-outlined text-2xl">bar_chart</span>
-              <span className="text-[10px] font-medium mt-1">Статистика</span>
-            </Link>
-            <Link href="/dashboard/settings" className="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
-              <span className="material-symbols-outlined text-2xl">settings</span>
-              <span className="text-[10px] font-medium mt-1">Настройки</span>
-            </Link>
-          </div>
-        </nav>
+        <BottomNav />
       </main>
     </div>
   )

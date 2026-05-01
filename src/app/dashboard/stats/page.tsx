@@ -12,12 +12,17 @@ export default async function StatsPage() {
   const habits = await getHabits()
 
   const today = new Date()
-  const todayStr = localDateStr(today)
+  
   const thirtyDaysAgo = new Date(today)
   thirtyDaysAgo.setDate(today.getDate() - 29)
   const startStr = localDateStr(thirtyDaysAgo)
 
-  const completions = await getCompletions(startStr, todayStr)
+  // Позволяем захватить до 7 дней вперед, чтобы учесть отметки, проставленные наперед на текущей неделе
+  const futureDate = new Date(today)
+  futureDate.setDate(today.getDate() + 7)
+  const endStr = localDateStr(futureDate)
+
+  const completions = await getCompletions(startStr, endStr)
 
   // Per-habit completion counts
   const completionsByHabit = new Map<string, number>()
@@ -141,8 +146,11 @@ export default async function StatsPage() {
                 <div key={habit.id} className="space-y-1.5">
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${habit.color}`} />
-                      <span className="text-slate-700 dark:text-slate-200 font-medium">{habit.title}</span>
+                      <div className={`w-3 h-3 rounded-full ${habit.color} shrink-0`} />
+                      <span className="text-slate-700 dark:text-slate-200 font-medium">
+                        {habit.emoji && <span className="mr-1">{habit.emoji}</span>}
+                        {habit.title}
+                      </span>
                     </div>
                     <span className="text-slate-500 dark:text-slate-400">{count} / 30 дней · {rate}%</span>
                   </div>
