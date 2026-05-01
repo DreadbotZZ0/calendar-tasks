@@ -16,7 +16,7 @@ export default async function SettingsPage() {
     day: 'numeric', month: 'long', year: 'numeric'
   })
   const license = await getLicense()
-  const isPro = !!license
+  const isPro = license?.plan === 'pro'
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -61,7 +61,7 @@ export default async function SettingsPage() {
           </span>
         </div>
         {!isPro && (
-          <p className="text-sm text-slate-500 dark:text-slate-400">До 8 привычек · 1 месяц истории</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">До 5 привычек · 1 месяц истории</p>
         )}
         <LicenseSection isPro={isPro} plan={license?.plan ?? undefined} />
       </div>

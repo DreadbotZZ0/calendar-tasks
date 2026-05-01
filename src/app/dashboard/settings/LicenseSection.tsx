@@ -15,18 +15,31 @@ export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?:
   if (isActivated) {
     const isProPlan = activePlan === 'pro' || isPro
     return (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-          <span className="material-symbols-outlined text-green-500 text-[18px]">verified</span>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+            <span className="material-symbols-outlined text-green-500 text-[18px]">verified</span>
+          </div>
+          <div>
+            <p className="font-semibold text-green-600 dark:text-green-400">
+              {isProPlan ? 'Pro активирован' : 'Базовый план активирован'}
+            </p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              {isProPlan ? 'Безлимитные привычки · полная история' : 'До 5 привычек · 1 месяц истории'}
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="font-semibold text-green-600 dark:text-green-400">
-            {isProPlan ? 'Pro активирован' : 'Базовый план активирован'}
-          </p>
-          <p className="text-xs text-slate-400 dark:text-slate-500">
-            {isProPlan ? 'Безлимитные привычки · полная история' : 'До 5 привычек · 1 месяц истории'}
-          </p>
-        </div>
+        {!isProPlan && (
+          <a
+            href="https://aronfatima.gumroad.com/l/bzynnz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-2 bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">workspace_premium</span>
+            Улучшить до Pro
+          </a>
+        )}
       </div>
     )
   }

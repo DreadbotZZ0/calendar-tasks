@@ -113,7 +113,7 @@ export default function Home() {
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex items-center gap-3 text-slate-700 dark:text-slate-300">
                   <span className="material-symbols-outlined text-green-500 text-xl">check</span>
-                  До 8 привычек
+                  До 5 привычек
                 </li>
                 <li className="flex items-center gap-3 text-slate-700 dark:text-slate-300">
                   <span className="material-symbols-outlined text-green-500 text-xl">check</span>
@@ -124,9 +124,9 @@ export default function Home() {
                   Базовая статистика
                 </li>
               </ul>
-              <Link href="/register" className="block text-center w-full py-3 rounded-lg border-2 border-[var(--color-primary-container)] text-[var(--color-primary-container)] font-medium hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors">
+              <a href="https://aronfatima.gumroad.com/l/oxcbh" target="_blank" rel="noopener noreferrer" className="block text-center w-full py-3 rounded-lg border-2 border-[var(--color-primary-container)] text-[var(--color-primary-container)] font-medium hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors">
                 Выбрать
-              </Link>
+              </a>
             </div>
             <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-lg flex flex-col relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-[var(--color-primary-container)] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Популярный</div>
