@@ -21,7 +21,7 @@ export default function Home() {
               <ThemeToggle />
               <Link className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium hidden md:block transition-colors" href="/login">Войти</Link>
               <Link className="bg-[var(--color-primary-container)] text-white hover:bg-[var(--color-primary)] hover:-translate-y-0.5 transition-all duration-200 px-4 py-2 rounded-lg font-medium text-sm" href="/register">
-                Начать бесплатно
+                Регистрация
               </Link>
             </div>
           </div>
@@ -40,10 +40,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-4">
               <Link href="/register" className="bg-[var(--color-primary-container)] text-white px-8 py-3.5 rounded-lg font-medium hover:bg-[var(--color-primary)] hover:-translate-y-0.5 transition-all shadow-sm text-center">
-                Начать бесплатно
-              </Link>
-              <Link href="/dashboard" className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-8 py-3.5 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-center">
-                Посмотреть демо
+                Начать
               </Link>
             </div>
           </div>
