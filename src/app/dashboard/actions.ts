@@ -110,6 +110,7 @@ export async function activateLicense(licenseKey: string) {
       }),
     })
     const result = await res.json()
+    console.log(`Gumroad [${product.permalink}]:`, JSON.stringify(result))
     if (result.success) {
       plan = product.plan
       break
