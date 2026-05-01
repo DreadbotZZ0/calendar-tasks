@@ -94,8 +94,8 @@ export async function activateLicense(licenseKey: string) {
   if (existing) return { error: 'Pro уже активирован на этом аккаунте.' }
 
   const PRODUCTS = [
-    { permalink: 'oxcbh', plan: 'basic' },
-    { permalink: 'bzynnz', plan: 'pro' },
+    { product_id: '2jcg5ZAW32iLGtkfMe8ZPA==', plan: 'basic' },
+    { product_id: 'f0cLBqj46i4YEcIsv3PhBg==', plan: 'pro' },
   ]
 
   let plan: string | null = null
@@ -104,13 +104,12 @@ export async function activateLicense(licenseKey: string) {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        product_permalink: product.permalink,
+        product_id: product.product_id,
         license_key: licenseKey.trim(),
         increment_uses_count: 'true',
       }),
     })
     const result = await res.json()
-    console.log(`Gumroad [${product.permalink}]:`, JSON.stringify(result))
     if (result.success) {
       plan = product.plan
       break
