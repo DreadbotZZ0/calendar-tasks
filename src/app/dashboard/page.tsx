@@ -87,6 +87,13 @@ export default async function DashboardPage({
 
   let streak = 0
   const cursor = new Date(today)
+  
+  // Если сегодня еще не отмечено, проверяем, была ли отметка вчера.
+  // Серия не прерывается, пока не пропущен весь сегодняшний день.
+  if (!completedDates.has(localDateStr(cursor))) {
+    cursor.setDate(cursor.getDate() - 1)
+  }
+
   while (completedDates.has(localDateStr(cursor))) {
     streak++
     cursor.setDate(cursor.getDate() - 1)
