@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
-import Image from "next/image";
 
 export default function Home() {
   return (
@@ -151,9 +150,9 @@ export default function Home() {
                   Приоритетная поддержка
                 </li>
               </ul>
-              <Link href="/register?plan=pro" className="block text-center w-full py-3 rounded-lg bg-[var(--color-primary-container)] text-white font-medium hover:bg-[var(--color-primary)] transition-colors">
+              <a href="https://aronfatima.gumroad.com/l/bzynnz" target="_blank" rel="noopener noreferrer" className="block text-center w-full py-3 rounded-lg bg-[var(--color-primary-container)] text-white font-medium hover:bg-[var(--color-primary)] transition-colors">
                 Оформить Pro
-              </Link>
+              </a>
             </div>
           </div>
         </section>

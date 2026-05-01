@@ -50,9 +50,9 @@ export default async function DashboardLayout({
               Выйти
             </button>
           </form>
-          <button className="w-full mt-2 py-2 text-sm font-medium text-white bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] rounded-lg transition-colors shadow-sm">
-            Upgrade to Pro
-          </button>
+          <a href="https://aronfatima.gumroad.com/l/bzynnz" target="_blank" rel="noopener noreferrer" className="w-full mt-2 py-2 text-sm font-medium text-white bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] rounded-lg transition-colors shadow-sm flex items-center justify-center gap-1">
+            Перейти на Pro
+          </a>
         </div>
       </aside>
 

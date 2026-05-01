@@ -23,7 +23,7 @@ export default function LicenseSection({ isPro }: { isPro: boolean }) {
     )
   }
 
-  const handleActivate = async (e: React.FormEvent) => {
+  const handleActivate = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!key.trim()) return
     setLoading(true)
@@ -40,7 +40,10 @@ export default function LicenseSection({ isPro }: { isPro: boolean }) {
   return (
     <div className="space-y-3">
       <p className="text-sm text-slate-600 dark:text-slate-400">
-        Купи Pro на Gumroad и введи полученный ключ ниже.
+        <a href="https://aronfatima.gumroad.com/l/bzynnz" target="_blank" rel="noopener noreferrer" className="text-[var(--color-primary-container)] underline hover:opacity-80">
+          Купи Pro на Gumroad
+        </a>
+        {' '}и введи полученный ключ ниже.
       </p>
       <form onSubmit={handleActivate} className="flex gap-2">
         <input
