@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { logout } from '@/app/login/actions'
 import ThemeToggle from '@/components/ThemeToggle'
+import LicenseSection from './LicenseSection'
+import { getLicense } from '../actions'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -13,6 +15,8 @@ export default async function SettingsPage() {
   const joinedAt = new Date(user.created_at).toLocaleDateString('ru-RU', {
     day: 'numeric', month: 'long', year: 'numeric'
   })
+  const license = await getLicense()
+  const isPro = !!license
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -50,16 +54,16 @@ export default async function SettingsPage() {
 
       {/* Plan */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
-        <h2 className="font-semibold text-slate-800 dark:text-white text-sm uppercase tracking-wide">Тариф</h2>
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-slate-800 dark:text-slate-200 font-medium">Базовый план</p>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">До 8 привычек · 1 месяц истории</p>
-          </div>
-          <button className="px-4 py-2 bg-[var(--color-primary-container)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary)] transition-colors">
-            Перейти на Pro
-          </button>
+          <h2 className="font-semibold text-slate-800 dark:text-white text-sm uppercase tracking-wide">Тариф</h2>
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${isPro ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+            {isPro ? 'PRO' : 'БАЗОВЫЙ'}
+          </span>
         </div>
+        {!isPro && (
+          <p className="text-sm text-slate-500 dark:text-slate-400">До 8 привычек · 1 месяц истории</p>
+        )}
+        <LicenseSection isPro={isPro} />
       </div>
 
       {/* Danger zone */}

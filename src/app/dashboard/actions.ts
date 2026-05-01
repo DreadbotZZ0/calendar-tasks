@@ -66,20 +66,82 @@ export async function toggleCompletion(habitId: string, date: string, isComplete
   return { success: true }
 }
 
+export async function getLicense() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+
+  const { data } = await supabase
+    .from('licenses')
+    .select('*')
+    .eq('user_id', user.id)
+    .single()
+
+  return data
+}
+
+export async function activateLicense(licenseKey: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: existing } = await supabase
+    .from('licenses')
+    .select('id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (existing) return { error: 'Pro уже активирован на этом аккаунте.' }
+
+  const response = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      product_id: 'f0cLBqj46i4YEcIsv3PhBg==',
+      license_key: licenseKey.trim(),
+      increment_uses_count: 'true',
+    }),
+  })
+
+  const result = await response.json()
+
+  if (!result.success) {
+    return { error: 'Недействительный ключ. Проверь правильность ввода.' }
+  }
+
+  const { error } = await supabase
+    .from('licenses')
+    .insert({ user_id: user.id, license_key: licenseKey.trim() })
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/dashboard/settings')
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 export async function addHabit(title: string, color: string = 'bg-indigo-500', emoji: string | null = null) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  // Check limits
-  const { count, error: countError } = await supabase
-    .from('habits')
-    .select('*', { count: 'exact', head: true })
+  // Pro users have no limit
+  const { data: license } = await supabase
+    .from('licenses')
+    .select('id')
     .eq('user_id', user.id)
+    .single()
 
-  if (countError) return { error: countError.message }
-  if (count !== null && count >= 8) {
-    return { error: 'В Базовом тарифе доступно максимум 8 привычек. Пожалуйста, обновитесь до Pro.' }
+  if (!license) {
+    const { count, error: countError } = await supabase
+      .from('habits')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+
+    if (countError) return { error: countError.message }
+    if (count !== null && count >= 8) {
+      return { error: 'В Базовом тарифе доступно максимум 8 привычек. Активируй Pro для безлимитного доступа.' }
+    }
   }
 
   const { error } = await supabase
