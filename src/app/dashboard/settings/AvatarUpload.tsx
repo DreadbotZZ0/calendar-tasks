@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { uploadAvatar } from '../actions'
+import { uploadAvatar, deleteAvatar } from '../actions'
 
 export default function AvatarUpload({
   currentUrl,
@@ -31,8 +31,19 @@ export default function AvatarUpload({
     } else if (result.url) {
       setUrl(result.url)
     }
-    // сбросить input чтобы можно было загрузить то же фото снова
     e.target.value = ''
+  }
+
+  const handleDelete = async () => {
+    setLoading(true)
+    setError('')
+    const result = await deleteAvatar()
+    setLoading(false)
+    if (result.error) {
+      setError(result.error)
+    } else {
+      setUrl(null)
+    }
   }
 
   return (
@@ -40,7 +51,7 @@ export default function AvatarUpload({
       <button
         type="button"
         onClick={() => !loading && inputRef.current?.click()}
-        className="relative w-16 h-16 rounded-full overflow-hidden bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[var(--color-primary-container)] text-2xl font-bold group cursor-pointer"
+        className="relative w-16 h-16 rounded-full overflow-hidden bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[var(--color-primary-container)] text-2xl font-bold group cursor-pointer shrink-0"
       >
         {url ? (
           <img src={url} alt="Аватар" className="w-full h-full object-cover" />
@@ -53,17 +64,30 @@ export default function AvatarUpload({
           <span className="material-symbols-outlined text-white text-[20px]">photo_camera</span>
         </div>
       </button>
-      <div>
+
+      <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => !loading && inputRef.current?.click()}
-          className="text-sm font-medium text-[var(--color-primary-container)] hover:underline"
+          className="text-sm font-medium text-[var(--color-primary-container)] hover:underline disabled:opacity-50"
+          disabled={loading}
         >
           {loading ? 'Загрузка...' : 'Сменить фото'}
         </button>
-        <p className="text-xs text-slate-400 mt-0.5">JPG, PNG, WebP · до 2 МБ</p>
-        {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+
+        {url && !loading && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="text-sm font-medium text-red-500 hover:underline"
+          >
+            Удалить
+          </button>
+        )}
       </div>
+
+      {error && <p className="text-xs text-red-500">{error}</p>}
+
       <input
         ref={inputRef}
         type="file"

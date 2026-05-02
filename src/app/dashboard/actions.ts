@@ -108,6 +108,24 @@ export async function uploadAvatar(formData: FormData) {
   return { success: true, url: publicUrl }
 }
 
+export async function deleteAvatar() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const extensions = ['jpg', 'jpeg', 'png', 'webp']
+  for (const ext of extensions) {
+    await supabase.storage.from('avatars').remove([`${user.id}.${ext}`])
+  }
+
+  const { error } = await supabase.auth.updateUser({ data: { avatar_url: null } })
+  if (error) return { error: error.message }
+
+  revalidatePath('/dashboard')
+  revalidatePath('/dashboard/settings')
+  return { success: true }
+}
+
 export async function getLicense() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
