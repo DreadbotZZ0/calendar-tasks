@@ -78,16 +78,9 @@ export default async function DashboardLayout({
         <header className="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:hidden">
           <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-lg">
             <span className="material-symbols-outlined text-[var(--color-primary-container)]">check_circle</span>
+            Календарь задач
           </Link>
-          <div className="flex items-center gap-2">
-            <SidebarUpgradeButton hasSubscription={hasSubscription} isPro={isPro} compact />
-            <ThemeToggle />
-            <form action={logout}>
-              <button type="submit" className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
-                <span className="material-symbols-outlined">logout</span>
-              </button>
-            </form>
-          </div>
+          <SidebarUpgradeButton hasSubscription={hasSubscription} isPro={isPro} compact />
         </header>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-24 md:pb-8">
