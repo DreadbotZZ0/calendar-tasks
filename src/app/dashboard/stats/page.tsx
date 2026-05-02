@@ -58,6 +58,7 @@ export default async function StatsPage() {
   }
 
   // Last 4 weeks stats
+  const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
   const weeks: { label: string; rate: number }[] = []
   for (let w = 3; w >= 0; w--) {
     const weekStart = new Date(today)
@@ -66,19 +67,12 @@ export default async function StatsPage() {
     const weekEnd = new Date(weekStart)
     weekEnd.setDate(weekStart.getDate() + 6)
 
-    const weekDays = 7
-    let completed = 0
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(weekStart)
-      d.setDate(weekStart.getDate() + i)
-      const ds = localDateStr(d)
-      if (completedDates.has(ds)) completed++
-    }
-
-    const endDay = weekEnd.getDate()
-    const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
-    const label = w === 0 ? 'Эта неделя' : `${weekStart.getDate()} ${months[weekStart.getMonth()]} — ${endDay} ${months[weekEnd.getMonth()]}`
-    weeks.push({ label, rate: weekDays > 0 ? Math.round((completed / weekDays) * 100) : 0 })
+    const weekStartStr = localDateStr(weekStart)
+    const weekEndStr = localDateStr(weekEnd)
+    const weekCompletions = completions.filter(c => c.date >= weekStartStr && c.date <= weekEndStr)
+    const possible = habits.length * 7
+    const label = w === 0 ? 'Эта неделя' : `${weekStart.getDate()} ${months[weekStart.getMonth()]} — ${weekEnd.getDate()} ${months[weekEnd.getMonth()]}`
+    weeks.push({ label, rate: possible > 0 ? Math.round((weekCompletions.length / possible) * 100) : 0 })
   }
 
   const totalCompletions = completions.length
