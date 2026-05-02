@@ -68,7 +68,7 @@ export default async function DashboardPage({
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const name = user?.email?.split('@')[0] || 'Арон'
+  const name = (user?.user_metadata?.display_name as string | undefined) || user?.email?.split('@')[0] || 'Арон'
 
   const dates = getWeekDates(weekOffset)
   const startDate = dates[0].dateString

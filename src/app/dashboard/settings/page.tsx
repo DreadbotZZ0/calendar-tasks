@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { logout } from '@/app/login/actions'
 import ThemeToggle from '@/components/ThemeToggle'
 import LicenseSection from './LicenseSection'
+import DisplayNameForm from './DisplayNameForm'
 import { getLicense } from '../actions'
 
 export default async function SettingsPage() {
@@ -11,7 +12,7 @@ export default async function SettingsPage() {
 
   if (!user) redirect('/login')
 
-  const name = user.email?.split('@')[0] || 'User'
+  const name = (user.user_metadata?.display_name as string | undefined) || user.email?.split('@')[0] || 'User'
   const joinedAt = new Date(user.created_at).toLocaleDateString('ru-RU', {
     day: 'numeric', month: 'long', year: 'numeric'
   })
@@ -38,6 +39,7 @@ export default async function SettingsPage() {
             <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">Зарегистрирован {joinedAt}</p>
           </div>
         </div>
+        <DisplayNameForm currentName={name} />
       </div>
 
       {/* Appearance */}

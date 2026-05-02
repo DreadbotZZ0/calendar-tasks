@@ -18,7 +18,7 @@ export default async function DashboardLayout({
 
   if (!user) redirect('/login')
 
-  const name = user.email?.split('@')[0] || 'User'
+  const name = (user.user_metadata?.display_name as string | undefined) || user.email?.split('@')[0] || 'User'
 
   const { data: license } = await supabase
     .from('licenses')
