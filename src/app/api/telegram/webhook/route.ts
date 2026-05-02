@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const supabase = createAdminClient()
     const { error } = await supabase
       .from('telegram_connections')
-      .upsert({ user_id: userId, chat_id: chatId }, { onConflict: 'user_id' })
+      .upsert({ user_id: userId, chat_id: chatId, notify_time: '09:00' }, { onConflict: 'user_id' })
 
     if (error) {
       await sendMessage(chatId, '❌ Ошибка подключения. Попробуй ещё раз.')
