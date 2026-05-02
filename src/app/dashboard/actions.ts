@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { createAdminClient } from '@/utils/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
 const TZ = 'Asia/Almaty'
@@ -280,7 +281,8 @@ export async function getTelegramConnection() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
-  const { data } = await supabase
+  const admin = createAdminClient()
+  const { data } = await admin
     .from('telegram_connections')
     .select('chat_id, notify_time')
     .eq('user_id', user.id)
