@@ -1,21 +1,34 @@
 'use client'
 
 import { useState } from 'react'
+import EmojiPicker, { Theme } from 'emoji-picker-react'
+import { useTheme } from 'next-themes'
 import { updateDisplayName } from '../actions'
 
-export default function DisplayNameForm({ currentName }: { currentName: string }) {
+export default function DisplayNameForm({
+  currentName,
+  currentEmoji,
+}: {
+  currentName: string
+  currentEmoji?: string | null
+}) {
   const [name, setName] = useState(currentName)
+  const [emoji, setEmoji] = useState<string | null>(currentEmoji ?? null)
+  const [showPicker, setShowPicker] = useState(false)
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
+  const { resolvedTheme } = useTheme()
+
+  const unchanged = name.trim() === currentName && emoji === (currentEmoji ?? null)
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!name.trim() || name.trim() === currentName) return
+    if (!name.trim() || unchanged) return
     setLoading(true)
     setError('')
     setSaved(false)
-    const result = await updateDisplayName(name)
+    const result = await updateDisplayName(name, emoji)
     setLoading(false)
     if (result.error) {
       setError(result.error)
@@ -29,6 +42,29 @@ export default function DisplayNameForm({ currentName }: { currentName: string }
     <div className="space-y-2">
       <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Отображаемое имя</p>
       <form onSubmit={handleSubmit} className="flex gap-2">
+        {/* Emoji button */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowPicker(v => !v)}
+            className="h-full px-3 py-2 flex items-center justify-center bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
+          >
+            {emoji || '😊'}
+          </button>
+          {showPicker && (
+            <div className="absolute top-full left-0 mt-2 z-50 shadow-xl">
+              <EmojiPicker
+                theme={resolvedTheme === 'dark' ? Theme.DARK : Theme.LIGHT}
+                onEmojiClick={(e) => {
+                  setEmoji(e.emoji)
+                  setShowPicker(false)
+                  setSaved(false)
+                }}
+              />
+            </div>
+          )}
+        </div>
+
         <input
           value={name}
           onChange={e => { setName(e.target.value); setSaved(false) }}
@@ -38,7 +74,7 @@ export default function DisplayNameForm({ currentName }: { currentName: string }
         />
         <button
           type="submit"
-          disabled={loading || !name.trim() || name.trim() === currentName}
+          disabled={loading || !name.trim() || unchanged}
           className="px-4 py-2 bg-[var(--color-primary-container)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary)] transition-colors disabled:opacity-50"
         >
           {loading ? 'Сохраняю...' : saved ? '✓ Сохранено' : 'Сохранить'}

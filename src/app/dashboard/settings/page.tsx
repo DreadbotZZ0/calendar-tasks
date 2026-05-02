@@ -4,6 +4,7 @@ import { logout } from '@/app/login/actions'
 import ThemeToggle from '@/components/ThemeToggle'
 import LicenseSection from './LicenseSection'
 import DisplayNameForm from './DisplayNameForm'
+import AvatarUpload from './AvatarUpload'
 import { getLicense } from '../actions'
 
 export default async function SettingsPage() {
@@ -12,7 +13,9 @@ export default async function SettingsPage() {
 
   if (!user) redirect('/login')
 
+  const displayEmoji = user.user_metadata?.display_emoji as string | undefined | null
   const name = (user.user_metadata?.display_name as string | undefined) || user.email?.split('@')[0] || 'User'
+  const avatarUrl = user.user_metadata?.avatar_url as string | undefined | null
   const joinedAt = new Date(user.created_at).toLocaleDateString('ru-RU', {
     day: 'numeric', month: 'long', year: 'numeric'
   })
@@ -29,17 +32,16 @@ export default async function SettingsPage() {
       {/* Profile */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
         <h2 className="font-semibold text-slate-800 dark:text-white text-sm uppercase tracking-wide">Профиль</h2>
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[var(--color-primary-container)] text-2xl font-bold">
-            {name.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <p className="font-semibold text-slate-900 dark:text-white text-lg">{name}</p>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">{user.email}</p>
-            <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">Зарегистрирован {joinedAt}</p>
-          </div>
+        <AvatarUpload currentUrl={avatarUrl} name={name} emoji={displayEmoji} />
+        <div>
+          <p className="font-semibold text-slate-900 dark:text-white text-lg">
+            {displayEmoji && <span className="mr-2">{displayEmoji}</span>}
+            {name}
+          </p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">{user.email}</p>
+          <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">Зарегистрирован {joinedAt}</p>
         </div>
-        <DisplayNameForm currentName={name} />
+        <DisplayNameForm currentName={name} currentEmoji={displayEmoji} />
       </div>
 
       {/* Appearance */}

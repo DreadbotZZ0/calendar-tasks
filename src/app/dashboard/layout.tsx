@@ -19,6 +19,8 @@ export default async function DashboardLayout({
   if (!user) redirect('/login')
 
   const name = (user.user_metadata?.display_name as string | undefined) || user.email?.split('@')[0] || 'User'
+  const displayEmoji = user.user_metadata?.display_emoji as string | undefined | null
+  const avatarUrl = user.user_metadata?.avatar_url as string | undefined | null
 
   const { data: license } = await supabase
     .from('licenses')
@@ -45,8 +47,14 @@ export default async function DashboardLayout({
 
         <div className="p-4 border-t border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[var(--color-primary-container)] font-bold">
-              {name.charAt(0).toUpperCase()}
+            <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[var(--color-primary-container)] font-bold overflow-hidden shrink-0">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Аватар" className="w-full h-full object-cover" />
+              ) : displayEmoji ? (
+                <span className="text-xl">{displayEmoji}</span>
+              ) : (
+                name.charAt(0).toUpperCase()
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{name}</p>

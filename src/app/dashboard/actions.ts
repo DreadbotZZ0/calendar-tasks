@@ -66,15 +66,46 @@ export async function toggleCompletion(habitId: string, date: string, isComplete
   return { success: true }
 }
 
-export async function updateDisplayName(displayName: string) {
+export async function updateDisplayName(displayName: string, emoji?: string | null) {
   const supabase = await createClient()
   const { error } = await supabase.auth.updateUser({
-    data: { display_name: displayName.trim() }
+    data: { display_name: displayName.trim(), display_emoji: emoji ?? null }
   })
   if (error) return { error: error.message }
   revalidatePath('/dashboard')
   revalidatePath('/dashboard/settings')
   return { success: true }
+}
+
+export async function uploadAvatar(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const file = formData.get('avatar') as File
+  if (!file || !file.size) return { error: 'Файл не выбран' }
+  if (file.size > 2 * 1024 * 1024) return { error: 'Файл слишком большой (макс 2 МБ)' }
+
+  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+  const path = `${user.id}.${ext}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('avatars')
+    .upload(path, file, { upsert: true, contentType: file.type })
+
+  if (uploadError) return { error: uploadError.message }
+
+  const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+
+  const { error: updateError } = await supabase.auth.updateUser({
+    data: { avatar_url: publicUrl }
+  })
+
+  if (updateError) return { error: updateError.message }
+
+  revalidatePath('/dashboard')
+  revalidatePath('/dashboard/settings')
+  return { success: true, url: publicUrl }
 }
 
 export async function getLicense() {
