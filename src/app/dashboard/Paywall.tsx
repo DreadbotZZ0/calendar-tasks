@@ -100,12 +100,13 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
           Приобрести подписку
         </a>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Уже купил?{' '}
-          <Link href="/dashboard/settings" className="text-[var(--color-primary-container)] underline hover:opacity-80" onClick={onClose}>
-            Активировать ключ →
-          </Link>
-        </p>
+        <Link
+          href="/dashboard/settings"
+          onClick={onClose}
+          className="block w-full py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-center"
+        >
+          Уже купил? Ввести ключ
+        </Link>
       </div>
     </div>
   )

@@ -71,7 +71,8 @@ export default async function DashboardLayout({
           <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-lg">
             <span className="material-symbols-outlined text-[var(--color-primary-container)]">check_circle</span>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <SidebarUpgradeButton hasSubscription={hasSubscription} isPro={isPro} compact />
             <ThemeToggle />
             <form action={logout}>
               <button type="submit" className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">

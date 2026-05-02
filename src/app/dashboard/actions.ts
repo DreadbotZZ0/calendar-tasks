@@ -128,7 +128,7 @@ export async function activateLicense(licenseKey: string) {
 
   revalidatePath('/dashboard/settings')
   revalidatePath('/dashboard')
-  return { success: true }
+  return { success: true, plan }
 }
 
 export async function addHabit(title: string, color: string = 'bg-indigo-500', emoji: string | null = null) {

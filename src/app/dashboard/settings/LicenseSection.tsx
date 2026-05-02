@@ -7,9 +7,11 @@ export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?:
   const [key, setKey] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [upgradedToPro, setUpgradedToPro] = useState(false)
+  const [activatedPlan, setActivatedPlan] = useState<string | null>(null)
 
-  const isBasic = !isPro && plan === 'basic'
+  const effectivePlan = activatedPlan ?? plan
+  const effectiveIsPro = isPro || activatedPlan === 'pro'
+  const isBasic = !effectiveIsPro && effectivePlan === 'basic'
 
   const handleActivate = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -21,12 +23,12 @@ export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?:
     if (result.error) {
       setError(result.error)
     } else {
-      setUpgradedToPro(true)
+      setActivatedPlan(result.plan ?? 'basic')
     }
   }
 
   // Pro activated (either from props or just upgraded)
-  if (isPro || upgradedToPro) {
+  if (effectiveIsPro) {
     return (
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
