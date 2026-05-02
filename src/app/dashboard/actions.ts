@@ -3,6 +3,22 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
+const TZ = 'Asia/Almaty'
+
+function secondsUntilNextTime(timeStr: string): number {
+  const now = new Date()
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false,
+  })
+  const parts = formatter.formatToParts(now)
+  const currentHour = parseInt(parts.find(p => p.type === 'hour')!.value)
+  const currentMin = parseInt(parts.find(p => p.type === 'minute')!.value)
+  const [targetHour, targetMin] = timeStr.split(':').map(Number)
+  let seconds = ((targetHour - currentHour) * 60 + (targetMin - currentMin)) * 60
+  if (seconds <= 0) seconds += 86400
+  return seconds
+}
+
 export async function getHabits() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -257,5 +273,82 @@ export async function deleteHabit(habitId: string) {
   if (error) return { error: error.message }
 
   revalidatePath('/dashboard')
+  return { success: true }
+}
+
+export async function getTelegramConnection() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+  const { data } = await supabase
+    .from('telegram_connections')
+    .select('chat_id, notify_time')
+    .eq('user_id', user.id)
+    .single()
+  return data
+}
+
+export async function setNotifyTime(notifyTime: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: conn } = await supabase
+    .from('telegram_connections')
+    .select('chat_id, qstash_message_id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!conn) return { error: 'Telegram не подключён' }
+
+  if (conn.qstash_message_id) {
+    await fetch(`https://qstash.upstash.io/v2/messages/${conn.qstash_message_id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${process.env.QSTASH_TOKEN}` },
+    }).catch(() => null)
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL!
+  const delay = secondsUntilNextTime(notifyTime)
+  const res = await fetch(`https://qstash.upstash.io/v2/publish/${appUrl}/api/telegram/notify`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.QSTASH_TOKEN}`,
+      'Content-Type': 'application/json',
+      'Upstash-Delay': `${delay}s`,
+    },
+    body: JSON.stringify({ userId: user.id, notifyTime }),
+  })
+
+  const data = await res.json()
+  await supabase
+    .from('telegram_connections')
+    .update({ notify_time: notifyTime, qstash_message_id: data.messageId ?? null })
+    .eq('user_id', user.id)
+
+  revalidatePath('/dashboard/settings')
+  return { success: true }
+}
+
+export async function disconnectTelegram() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: conn } = await supabase
+    .from('telegram_connections')
+    .select('qstash_message_id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (conn?.qstash_message_id) {
+    await fetch(`https://qstash.upstash.io/v2/messages/${conn.qstash_message_id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${process.env.QSTASH_TOKEN}` },
+    }).catch(() => null)
+  }
+
+  await supabase.from('telegram_connections').delete().eq('user_id', user.id)
+  revalidatePath('/dashboard/settings')
   return { success: true }
 }

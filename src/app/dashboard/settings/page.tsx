@@ -5,7 +5,8 @@ import ThemeToggle from '@/components/ThemeToggle'
 import LicenseSection from './LicenseSection'
 import DisplayNameForm from './DisplayNameForm'
 import AvatarUpload from './AvatarUpload'
-import { getLicense } from '../actions'
+import TelegramSection from './TelegramSection'
+import { getLicense, getTelegramConnection } from '../actions'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -21,6 +22,7 @@ export default async function SettingsPage() {
   })
   const license = await getLicense()
   const isPro = license?.plan === 'pro'
+  const telegramConn = await getTelegramConnection()
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -69,6 +71,21 @@ export default async function SettingsPage() {
         )}
         <LicenseSection isPro={isPro} plan={license?.plan ?? undefined} />
       </div>
+
+      {/* Telegram notifications — Pro only */}
+      {isPro && (
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <h2 className="font-semibold text-slate-800 dark:text-white text-sm uppercase tracking-wide">Уведомления</h2>
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">PRO</span>
+          </div>
+          <TelegramSection
+            userId={user.id}
+            connected={!!telegramConn}
+            currentNotifyTime={telegramConn?.notify_time}
+          />
+        </div>
+      )}
 
       {/* Danger zone */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-red-200 dark:border-red-900/40 p-6 space-y-4">
