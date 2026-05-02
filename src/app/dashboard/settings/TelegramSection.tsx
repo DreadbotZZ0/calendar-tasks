@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { setNotifyTime, disconnectTelegram } from '../actions'
 
 const BOT_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME
@@ -21,7 +20,6 @@ export default function TelegramSection({
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [opened, setOpened] = useState(false)
-  const router = useRouter()
 
   const botUrl = `https://t.me/${BOT_USERNAME}?start=${userId}`
 
@@ -66,7 +64,7 @@ export default function TelegramSection({
         {opened ? (
           <button
             type="button"
-            onClick={() => router.refresh()}
+            onClick={() => window.location.reload()}
             className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             ✓ Я нажал Start — проверить подключение
