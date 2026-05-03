@@ -80,7 +80,18 @@ export default async function DashboardLayout({
             <span className="material-symbols-outlined text-[var(--color-primary-container)]">check_circle</span>
             Календарь задач
           </Link>
-          <SidebarUpgradeButton hasSubscription={hasSubscription} isPro={isPro} compact />
+          <div className="flex items-center gap-2">
+            <SidebarUpgradeButton hasSubscription={hasSubscription} isPro={isPro} compact />
+            <Link href="/dashboard/settings" className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[var(--color-primary-container)] font-bold overflow-hidden shrink-0">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Аватар" className="w-full h-full object-cover" />
+              ) : displayEmoji ? (
+                <span className="text-lg">{displayEmoji}</span>
+              ) : (
+                <span className="text-sm">{name.charAt(0).toUpperCase()}</span>
+              )}
+            </Link>
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-24 md:pb-8">
