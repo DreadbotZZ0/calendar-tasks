@@ -1,3 +1,5 @@
+import PetNameForm from './PetNameForm'
+
 // Shared face helpers
 function Eyes({ x1, y1, x2, y2, size = 4 }: { x1: number; y1: number; x2: number; y2: number; size?: number }) {
   const p = size * 0.5
@@ -15,6 +17,26 @@ function Eyes({ x1, y1, x2, y2, size = 4 }: { x1: number; y1: number; x2: number
         <circle cx={x2 + p * 0.55} cy={y2 - p * 0.3} r={h} fill="white" />
       </g>
     </>
+  )
+}
+
+function SadEyes({ x1, y1, x2, y2, size = 4 }: { x1: number; y1: number; x2: number; y2: number; size?: number }) {
+  return (
+    <>
+      <circle cx={x1} cy={y1} r={size} fill="white" opacity="0.6" />
+      <line x1={x1 - size * 0.6} y1={y1 - size * 0.3} x2={x1 + size * 0.6} y2={y1 + size * 0.1} stroke="#555" strokeWidth="1.2" strokeLinecap="round" />
+      <circle cx={x2} cy={y2} r={size} fill="white" opacity="0.6" />
+      <line x1={x2 - size * 0.6} y1={y2 - size * 0.3} x2={x2 + size * 0.6} y2={y2 + size * 0.1} stroke="#555" strokeWidth="1.2" strokeLinecap="round" />
+    </>
+  )
+}
+
+function SadMouth({ cx, cy, w = 10 }: { cx: number; cy: number; w?: number }) {
+  return (
+    <path
+      d={`M${cx - w / 2} ${cy + w * 0.4} Q${cx} ${cy - w * 0.15} ${cx + w / 2} ${cy + w * 0.4}`}
+      stroke="#555" strokeWidth="1.5" fill="none" strokeLinecap="round"
+    />
   )
 }
 
@@ -36,6 +58,21 @@ function Pot() {
       <path d="M70 109 L72 128" stroke="#B5523A" strokeWidth="1" opacity="0.4" />
       <ellipse cx="50" cy="108" rx="30" ry="5" fill="#5C3317" />
       <ellipse cx="44" cy="107" rx="13" ry="2.5" fill="#6E3F1E" opacity="0.7" />
+    </g>
+  )
+}
+
+// Dead/wilted version of the seed
+function DeadPet() {
+  return (
+    <g>
+      <ellipse cx="50" cy="88" rx="17" ry="14" fill="#5a5a5a" opacity="0.7" />
+      <path d="M37 86 Q50 80 63 86" stroke="#444" strokeWidth="1.5" fill="none" opacity="0.5" />
+      <SadEyes x1={43} y1={84} x2={57} y2={84} size={4} />
+      <SadMouth cx={50} cy={92} w={10} />
+      {/* X marks for eyes overlay */}
+      <text x="42" y="87" textAnchor="middle" fontSize="9" fill="#555" opacity="0.8">×</text>
+      <text x="58" y="87" textAnchor="middle" fontSize="9" fill="#555" opacity="0.8">×</text>
     </g>
   )
 }
@@ -253,50 +290,113 @@ function getStage(pct: number) {
   return { stage: STAGES[0], index: 0 }
 }
 
-export default function PlantWidget({ completionPct, hasHabits }: { completionPct: number; hasHabits: boolean }) {
-  const { stage, index } = getStage(completionPct)
-  const PlantComponent = stage.component
+export default function PlantWidget({
+  completionPct,
+  hasHabits,
+  petState = 'healthy',
+  petName,
+}: {
+  completionPct: number
+  hasHabits: boolean
+  petState?: 'healthy' | 'warning_sent' | 'dead'
+  petName?: string | null
+}) {
+  const isDying = petState === 'warning_sent'
+  const isDead = petState === 'dead'
+
+  const displayPct = isDead ? 0 : completionPct
+  const { stage, index } = getStage(displayPct)
+  const PlantComponent = isDead ? DeadPet : stage.component
   const nextStage = STAGES[index + 1]
   const pctInStage = nextStage
-    ? Math.round(((completionPct - stage.minPct) / (nextStage.minPct - stage.minPct)) * 100)
+    ? Math.round(((displayPct - stage.minPct) / (nextStage.minPct - stage.minPct)) * 100)
     : 100
 
+  const cardBorder = isDead
+    ? 'border-slate-300 dark:border-slate-600'
+    : isDying
+    ? 'border-orange-400 dark:border-orange-500 ring-2 ring-orange-200 dark:ring-orange-800/50'
+    : 'border-slate-200 dark:border-slate-700'
+
+  const bgGradient = isDead ? 'from-slate-700 to-slate-600' : stage.bg
+
+  const pctBadgeClass = isDead
+    ? 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
+    : isDying
+    ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400'
+    : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+
+  const barColor = isDying ? 'bg-orange-400' : 'bg-green-500'
+
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+    <div className={`bg-white dark:bg-slate-800 rounded-xl shadow-sm border ${cardBorder} p-6 transition-all`}>
+      {isDying && (
+        <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 text-sm font-medium mb-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg px-3 py-2">
+          <span className="material-symbols-outlined text-base" style={{ fontSize: '18px' }}>warning</span>
+          Питомец умирает! Отметь хотя бы одну привычку сегодня, чтобы спасти его.
+        </div>
+      )}
+      {isDead && (
+        <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium mb-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg px-3 py-2">
+          <span>💀</span>
+          Питомец погиб... Начни отмечать привычки — он возродится!
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Plant character */}
-        <div className={`w-28 h-32 rounded-2xl bg-gradient-to-b ${stage.bg} flex items-center justify-center shrink-0 shadow-lg overflow-hidden`}>
-          <svg viewBox="0 0 100 130" width="100" height="130" xmlns="http://www.w3.org/2000/svg">
+        <div className={`w-28 h-32 rounded-2xl bg-gradient-to-b ${bgGradient} flex items-center justify-center shrink-0 shadow-lg overflow-hidden`}>
+          <svg
+            viewBox="0 0 100 130"
+            width="100"
+            height="130"
+            xmlns="http://www.w3.org/2000/svg"
+            style={isDead ? { filter: 'grayscale(1) brightness(0.55)' } : undefined}
+          >
             <PlantComponent />
             <Pot />
           </svg>
         </div>
 
         {/* Info */}
-        <div className="flex-1 text-center sm:text-left space-y-2">
-          <div className="flex items-center gap-2 justify-center sm:justify-start">
-            <h3 className="font-bold text-slate-900 dark:text-white text-lg">{stage.name}</h3>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-              {completionPct}%
+        <div className="flex-1 text-center sm:text-left space-y-1">
+          <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+            <h3 className="font-bold text-slate-900 dark:text-white text-lg">
+              {isDead ? 'Питомец погиб' : stage.name}
+            </h3>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${pctBadgeClass}`}>
+              {displayPct}%
             </span>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            {hasHabits ? stage.text : 'Добавь первую привычку, чтобы твой питомец начал расти!'}
+
+          <PetNameForm initialName={petName ?? null} stageName={stage.name} />
+
+          <p className="text-sm text-slate-500 dark:text-slate-400 pt-1">
+            {!hasHabits
+              ? 'Добавь первую привычку, чтобы твой питомец начал расти!'
+              : isDead
+              ? 'Отметь привычку — и питомец начнёт возрождаться с нуля.'
+              : isDying
+              ? 'Помоги питомцу — отметь привычку прямо сейчас!'
+              : stage.text}
           </p>
 
-          {nextStage ? (
-            <div className="space-y-1">
+          {!isDead && nextStage ? (
+            <div className="space-y-1 pt-1">
               <div className="flex justify-between text-xs text-slate-400 dark:text-slate-500">
                 <span>{stage.name}</span>
                 <span>до «{nextStage.name}»</span>
               </div>
               <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                <div className="h-full bg-green-500 rounded-full transition-all duration-700" style={{ width: `${pctInStage}%` }} />
+                <div
+                  className={`h-full ${barColor} rounded-full transition-all duration-700`}
+                  style={{ width: `${pctInStage}%` }}
+                />
               </div>
             </div>
-          ) : (
-            <p className="text-xs text-yellow-500 font-medium">🏆 Максимальный уровень достигнут!</p>
-          )}
+          ) : !isDead ? (
+            <p className="text-xs text-yellow-500 font-medium pt-1">🏆 Максимальный уровень достигнут!</p>
+          ) : null}
         </div>
       </div>
     </div>

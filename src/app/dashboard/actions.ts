@@ -65,18 +65,22 @@ export async function toggleCompletion(habitId: string, date: string, isComplete
   if (!user) return { error: 'Not authenticated' }
 
   if (isCompleted) {
-    // Delete completion
     const { error } = await supabase
       .from('completions')
       .delete()
       .match({ habit_id: habitId, date: date, user_id: user.id })
     if (error) return { error: error.message }
   } else {
-    // Add completion
     const { error } = await supabase
       .from('completions')
       .insert({ habit_id: habitId, date: date, user_id: user.id })
     if (error) return { error: error.message }
+    // Revive pet if it was dying or dead
+    await supabase
+      .from('plant_state')
+      .update({ state: 'healthy' })
+      .eq('user_id', user.id)
+      .in('state', ['warning_sent', 'dead'])
   }
 
   revalidatePath('/dashboard')
@@ -490,6 +494,33 @@ export async function addReminder(habitId: string | null, notifyTime: string, is
       .eq('id', reminder.id)
   }
 
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
+export async function getPetState() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+  const { data } = await supabase
+    .from('plant_state')
+    .select('state, pet_name')
+    .eq('user_id', user.id)
+    .single()
+  return data as { state: 'healthy' | 'warning_sent' | 'dead'; pet_name: string | null } | null
+}
+
+export async function setPetName(name: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  const trimmed = name.trim().slice(0, 24)
+  await supabase
+    .from('plant_state')
+    .upsert(
+      { user_id: user.id, pet_name: trimmed || null, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id' }
+    )
   revalidatePath('/dashboard')
   return { success: true }
 }

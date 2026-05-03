@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
-import { getHabits, getCompletions, getLicense, getTelegramConnection, getTelegramReminders } from './actions'
+import { getHabits, getCompletions, getLicense, getTelegramConnection, getTelegramReminders, getPetState } from './actions'
 import HabitsTable from './HabitsTable'
 import TelegramReminders from './TelegramReminders'
 import PlantWidget from './PlantWidget'
@@ -76,12 +76,13 @@ export default async function DashboardPage({
   const startDate = dates[0].dateString
   const endDate = dates[6].dateString
 
-  const [habits, completions, license, telegramConn, telegramReminders] = await Promise.all([
+  const [habits, completions, license, telegramConn, telegramReminders, petState] = await Promise.all([
     getHabits(),
     getCompletions(startDate, endDate),
     getLicense(),
     getTelegramConnection(),
     getTelegramReminders(),
+    getPetState(),
   ])
 
   const weekLabel = buildWeekLabel(dates)
@@ -202,7 +203,12 @@ export default async function DashboardPage({
       )}
 
       {/* Plant Widget */}
-      <PlantWidget completionPct={plantPct} hasHabits={habits.length > 0} />
+      <PlantWidget
+        completionPct={plantPct}
+        hasHabits={habits.length > 0}
+        petState={petState?.state ?? 'healthy'}
+        petName={petState?.pet_name ?? null}
+      />
 
       {/* Bottom Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
