@@ -121,6 +121,10 @@ export default function Home() {
                   <span className="material-symbols-outlined text-green-500 text-xl">check</span>
                   Базовая статистика
                 </li>
+                <li className="flex items-center gap-3 text-slate-700 dark:text-slate-300">
+                  <span className="material-symbols-outlined text-green-500 text-xl">check</span>
+                  🌱 Питомец-растение
+                </li>
               </ul>
               <a href="https://aronfatima.gumroad.com/l/oxcbh" target="_blank" rel="noopener noreferrer" className="block text-center w-full py-3 rounded-lg border-2 border-[var(--color-primary-container)] text-[var(--color-primary-container)] font-medium hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors">
                 Выбрать
@@ -137,11 +141,19 @@ export default function Home() {
                 </li>
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
-                  Полная статистика и история
+                  Полная история
                 </li>
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
-                  Уведомления в Telegram для задач и планов
+                  Аналитика по дням недели
+                </li>
+                <li className="flex items-center gap-3 text-slate-300">
+                  <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
+                  Уведомления в Telegram
+                </li>
+                <li className="flex items-center gap-3 text-slate-300">
+                  <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
+                  🌱 Питомец + предупреждения о пропуске
                 </li>
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>

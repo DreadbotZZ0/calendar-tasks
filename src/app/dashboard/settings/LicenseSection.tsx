@@ -92,7 +92,7 @@ export default function LicenseSection({
           </div>
           <div>
             <p className="font-semibold text-green-600 dark:text-green-400">Pro активирован</p>
-            <p className="text-xs text-slate-400 dark:text-slate-500">Безлимитные привычки и задачи · полная история · уведомления в Telegram</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">Безлимит привычек · полная история · аналитика по дням недели · Telegram · 🌱 питомец</p>
           </div>
         </div>
         {!activatedPlan && <ExpiryBadge expiresAt={expiresAt} />}
@@ -131,7 +131,7 @@ export default function LicenseSection({
           </div>
           <div>
             <p className="font-semibold text-green-600 dark:text-green-400">Базовый план активирован</p>
-            <p className="text-xs text-slate-400 dark:text-slate-500">До 5 привычек · 1 месяц истории</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">До 5 привычек · 1 месяц истории · 🌱 питомец</p>
           </div>
         </div>
         {!activatedPlan && <ExpiryBadge expiresAt={expiresAt} />}

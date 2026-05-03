@@ -8,14 +8,14 @@ const PLANS = {
     name: 'Базовая',
     price: '$1',
     url: 'https://aronfatima.gumroad.com/l/oxcbh',
-    features: ['До 5 привычек', 'Статистика'],
+    features: ['До 5 привычек', '1 месяц истории', 'Статистика', '🌱 Питомец-растение'],
     popular: false,
   },
   pro: {
     name: 'Pro',
     price: '$2',
     url: 'https://aronfatima.gumroad.com/l/bzynnz',
-    features: ['Безлимит привычек и задач', 'Полная история', 'Уведомления в Telegram'],
+    features: ['Безлимит привычек', 'Полная история', 'Аналитика по дням недели', 'Уведомления в Telegram', '🌱 Питомец + предупреждения'],
     popular: true,
   },
 }
