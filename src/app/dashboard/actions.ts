@@ -143,6 +143,33 @@ export async function deleteAvatar() {
   return { success: true }
 }
 
+const PLAN_PRODUCT_IDS: Record<string, string> = {
+  basic: '2jcg5ZAW32iLGtkfMe8ZPA==',
+  pro: 'f0cLBqj46i4YEcIsv3PhBg==',
+}
+
+async function checkGumroadActive(licenseKey: string, plan: string): Promise<boolean> {
+  const productId = PLAN_PRODUCT_IDS[plan]
+  if (!productId) return false
+  try {
+    const res = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        product_id: productId,
+        license_key: licenseKey,
+        increment_uses_count: 'false',
+      }),
+    })
+    const data = await res.json()
+    if (!data.success) return false
+    const p = data.purchase
+    return !p.subscription_cancelled_at && !p.subscription_ended_at && !p.refunded && !p.chargebacked
+  } catch {
+    return true // Gumroad API down — benefit of the doubt
+  }
+}
+
 export async function getLicense() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -153,6 +180,24 @@ export async function getLicense() {
     .select('*')
     .eq('user_id', user.id)
     .single()
+
+  if (!data) return null
+
+  // Auto-verify when expires_at is within 3 days or already past
+  if (data.expires_at && data.license_key && data.plan) {
+    const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+    if (new Date(data.expires_at) <= threeDaysFromNow) {
+      const isActive = await checkGumroadActive(data.license_key, data.plan)
+      if (isActive) {
+        const newExpiresAt = new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString()
+        await supabase
+          .from('licenses')
+          .update({ expires_at: newExpiresAt })
+          .eq('user_id', user.id)
+        data.expires_at = newExpiresAt
+      }
+    }
+  }
 
   return data
 }
