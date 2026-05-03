@@ -44,8 +44,16 @@ export default function HabitsTable({
   const [isAdding, setIsAdding] = useState(false)
   const [newHabitTitle, setNewHabitTitle] = useState('')
   const [newHabitEmoji, setNewHabitEmoji] = useState<string | null>(null)
+  const [newHabitColor, setNewHabitColor] = useState('bg-violet-500')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const COLORS = [
+    'bg-violet-500', 'bg-fuchsia-500', 'bg-pink-500', 'bg-rose-500',
+    'bg-red-500', 'bg-orange-500', 'bg-amber-400', 'bg-yellow-400',
+    'bg-lime-500', 'bg-green-500', 'bg-emerald-500', 'bg-teal-500',
+    'bg-cyan-500', 'bg-sky-500', 'bg-blue-500', 'bg-indigo-500',
+  ]
   const [showScrollHint, setShowScrollHint] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
   const { resolvedTheme } = useTheme()
@@ -95,13 +103,14 @@ export default function HabitsTable({
     e.preventDefault()
     if (!newHabitTitle.trim()) return
     setLoading(true)
-    const { error } = await addHabit(newHabitTitle.trim(), 'bg-indigo-500', newHabitEmoji)
+    const { error } = await addHabit(newHabitTitle.trim(), newHabitColor, newHabitEmoji)
     setLoading(false)
     if (error) {
       alert('Ошибка: ' + error)
     } else {
       setNewHabitTitle('')
       setNewHabitEmoji(null)
+      setNewHabitColor('bg-violet-500')
       setShowEmojiPicker(false)
       setIsAdding(false)
       // The page will revalidate and update the props, but we could also do optimistic update here
@@ -217,6 +226,16 @@ export default function HabitsTable({
           {isAdding && (
             <tr className="bg-slate-50 dark:bg-slate-800/50">
               <td className="py-3 px-3 md:px-6" colSpan={dates.length + 2}>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {COLORS.map(c => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setNewHabitColor(c)}
+                      className={`w-6 h-6 rounded-full ${c} transition-transform ${newHabitColor === c ? 'ring-2 ring-offset-1 ring-slate-400 dark:ring-slate-300 scale-110' : 'hover:scale-110'}`}
+                    />
+                  ))}
+                </div>
                 <form onSubmit={handleAdd} className="flex gap-2 relative">
                   <div className="relative">
                     <button

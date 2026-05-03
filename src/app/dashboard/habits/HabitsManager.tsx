@@ -14,16 +14,22 @@ type Habit = {
 }
 
 const COLORS = [
-  { cls: 'bg-indigo-500', label: 'Индиго' },
   { cls: 'bg-violet-500', label: 'Фиолетовый' },
+  { cls: 'bg-fuchsia-500', label: 'Фуксия' },
   { cls: 'bg-pink-500', label: 'Розовый' },
-  { cls: 'bg-rose-500', label: 'Красный' },
+  { cls: 'bg-rose-500', label: 'Малиновый' },
+  { cls: 'bg-red-500', label: 'Красный' },
   { cls: 'bg-orange-500', label: 'Оранжевый' },
-  { cls: 'bg-amber-500', label: 'Жёлтый' },
+  { cls: 'bg-amber-400', label: 'Янтарный' },
+  { cls: 'bg-yellow-400', label: 'Жёлтый' },
+  { cls: 'bg-lime-500', label: 'Лайм' },
   { cls: 'bg-green-500', label: 'Зелёный' },
+  { cls: 'bg-emerald-500', label: 'Изумрудный' },
   { cls: 'bg-teal-500', label: 'Бирюзовый' },
-  { cls: 'bg-cyan-500', label: 'Голубой' },
+  { cls: 'bg-cyan-500', label: 'Циан' },
   { cls: 'bg-sky-500', label: 'Небесный' },
+  { cls: 'bg-blue-500', label: 'Синий' },
+  { cls: 'bg-indigo-500', label: 'Индиго' },
 ]
 
 export default function HabitsManager({ initialHabits }: { initialHabits: Habit[] }) {
