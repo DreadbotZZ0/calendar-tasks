@@ -14,7 +14,7 @@ type Reminder = {
   habit_id: string | null
   notify_time: string
   is_recurring: boolean
-  habits: { title: string; emoji?: string | null } | null
+  habits: { title: string; emoji?: string | null }[] | null
 }
 
 export default function TelegramReminders({
@@ -54,8 +54,9 @@ export default function TelegramReminders({
 
   const habitLabel = (r: Reminder) => {
     if (!r.habit_id) return 'Все привычки'
-    if (!r.habits) return 'Привычка'
-    return `${r.habits.emoji ? r.habits.emoji + ' ' : ''}${r.habits.title}`
+    const h = r.habits?.[0]
+    if (!h) return 'Привычка'
+    return `${h.emoji ? h.emoji + ' ' : ''}${h.title}`
   }
 
   return (

@@ -385,12 +385,12 @@ export async function getTelegramReminders() {
     .select('id, habit_id, notify_time, is_recurring, habits(title, emoji)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: true })
-  return (data ?? []) as {
+  return (data ?? []) as unknown as {
     id: string
     habit_id: string | null
     notify_time: string
     is_recurring: boolean
-    habits: { title: string; emoji?: string | null } | null
+    habits: { title: string; emoji?: string | null }[] | null
   }[]
 }
 
