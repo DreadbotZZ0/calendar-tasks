@@ -112,6 +112,12 @@ export default async function DashboardPage({
   const maxStreak = habits.length > 0 ? Math.max(...Object.values(habitStreaks)) : 0
 
   const isCurrentWeek = weekOffset === 0
+  const isExpired = license?.expires_at ? new Date(license.expires_at) < new Date() : false
+  const isPro = license?.plan === 'pro' && !isExpired
+  const MAX_WEEK_BASIC = -4 // ~28 days back
+
+  const canGoBack = isPro || weekOffset > MAX_WEEK_BASIC
+  const historyLocked = !isPro && weekOffset < MAX_WEEK_BASIC
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
@@ -127,12 +133,18 @@ export default async function DashboardPage({
 
       {/* Week Navigation */}
       <div className="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <Link
-          href={`/dashboard?week=${weekOffset - 1}`}
-          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 dark:text-slate-400 transition-colors"
-        >
-          <span className="material-symbols-outlined">chevron_left</span>
-        </Link>
+        {canGoBack ? (
+          <Link
+            href={`/dashboard?week=${weekOffset - 1}`}
+            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 dark:text-slate-400 transition-colors"
+          >
+            <span className="material-symbols-outlined">chevron_left</span>
+          </Link>
+        ) : (
+          <span className="p-2 rounded-lg text-slate-200 dark:text-slate-600 cursor-not-allowed">
+            <span className="material-symbols-outlined">chevron_left</span>
+          </span>
+        )}
 
         {/* Clickable date label → mini calendar */}
         <WeekPicker weekOffset={weekOffset} weekLabel={weekLabel} />
@@ -154,10 +166,26 @@ export default async function DashboardPage({
       </div>
 
       {/* Habit Tracker Table */}
-      <HabitsTable initialHabits={habits} initialCompletions={completions} dates={dates} habitStreaks={habitStreaks} />
+      {historyLocked ? (
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-12 text-center space-y-4">
+          <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600">lock</span>
+          <div>
+            <p className="font-semibold text-slate-700 dark:text-slate-200">История за этот период недоступна</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Базовый план включает только последний месяц. Перейди на Pro для полной истории.</p>
+          </div>
+          <Link
+            href="/dashboard/settings"
+            className="inline-block px-6 py-2.5 bg-[var(--color-primary-container)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary)] transition-colors"
+          >
+            Перейти на Pro
+          </Link>
+        </div>
+      ) : (
+        <HabitsTable initialHabits={habits} initialCompletions={completions} dates={dates} habitStreaks={habitStreaks} />
+      )}
 
       {/* Telegram Reminders — only for Pro + connected */}
-      {license?.plan === 'pro' && telegramConn && (
+      {isPro && telegramConn && (
         <TelegramReminders habits={habits} initialReminders={telegramReminders} />
       )}
 
