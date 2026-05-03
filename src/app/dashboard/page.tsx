@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { getHabits, getCompletions, getLicense, getTelegramConnection, getTelegramReminders } from './actions'
 import HabitsTable from './HabitsTable'
 import TelegramReminders from './TelegramReminders'
+import PlantWidget from './PlantWidget'
 import Link from 'next/link'
 import WeekPicker from './WeekPicker'
 
@@ -114,6 +115,10 @@ export default async function DashboardPage({
   const isCurrentWeek = weekOffset === 0
   const isExpired = license?.expires_at ? new Date(license.expires_at) < new Date() : false
   const isPro = license?.plan === 'pro' && !isExpired
+
+  const plantPct = habits.length > 0
+    ? Math.min(100, Math.round(allCompletionsForStreak.length / (habits.length * 30) * 100))
+    : 0
   const MAX_WEEK_BASIC = -4 // ~28 days back
 
   const canGoBack = isPro || weekOffset > MAX_WEEK_BASIC
@@ -188,6 +193,9 @@ export default async function DashboardPage({
       {isPro && telegramConn && (
         <TelegramReminders habits={habits} initialReminders={telegramReminders} />
       )}
+
+      {/* Plant Widget */}
+      <PlantWidget completionPct={plantPct} hasHabits={habits.length > 0} />
 
       {/* Bottom Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

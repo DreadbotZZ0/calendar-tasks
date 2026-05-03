@@ -25,6 +25,7 @@ export default async function SettingsPage() {
   const license = await getLicense()
   const isExpired = license?.expires_at ? new Date(license.expires_at) < new Date() : false
   const isPro = license?.plan === 'pro' && !isExpired
+  const hasActivePlan = !!license && !isExpired
   const telegramConn = await getTelegramConnection()
 
   return (
@@ -65,11 +66,11 @@ export default async function SettingsPage() {
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-slate-800 dark:text-white text-sm uppercase tracking-wide">Тариф</h2>
-          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${isPro ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
-            {isPro ? 'PRO' : 'БАЗОВЫЙ'}
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${isPro ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : hasActivePlan ? 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400' : 'bg-red-100 dark:bg-red-900/30 text-red-500 dark:text-red-400'}`}>
+            {isPro ? 'PRO' : hasActivePlan ? 'БАЗОВЫЙ' : 'НЕТ ПЛАНА'}
           </span>
         </div>
-        {!isPro && (
+        {!isPro && hasActivePlan && (
           <p className="text-sm text-slate-500 dark:text-slate-400">До 5 привычек · 1 месяц истории</p>
         )}
         <LicenseSection
