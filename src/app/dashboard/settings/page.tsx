@@ -84,7 +84,6 @@ export default async function SettingsPage() {
           <TelegramSection
             userId={user.id}
             connected={!!telegramConn}
-            currentNotifyTime={telegramConn?.notify_time}
           />
         </div>
       )}

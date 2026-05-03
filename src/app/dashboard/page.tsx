@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
-import { getHabits, getCompletions } from './actions'
+import { getHabits, getCompletions, getLicense, getTelegramConnection, getTelegramReminders } from './actions'
 import HabitsTable from './HabitsTable'
+import TelegramReminders from './TelegramReminders'
 import Link from 'next/link'
 import WeekPicker from './WeekPicker'
 
@@ -74,8 +75,13 @@ export default async function DashboardPage({
   const startDate = dates[0].dateString
   const endDate = dates[6].dateString
 
-  const habits = await getHabits()
-  const completions = await getCompletions(startDate, endDate)
+  const [habits, completions, license, telegramConn, telegramReminders] = await Promise.all([
+    getHabits(),
+    getCompletions(startDate, endDate),
+    getLicense(),
+    getTelegramConnection(),
+    getTelegramReminders(),
+  ])
 
   const weekLabel = buildWeekLabel(dates)
   const totalCompleted = completions.length
@@ -149,6 +155,11 @@ export default async function DashboardPage({
 
       {/* Habit Tracker Table */}
       <HabitsTable initialHabits={habits} initialCompletions={completions} dates={dates} habitStreaks={habitStreaks} />
+
+      {/* Telegram Reminders — only for Pro + connected */}
+      {license?.plan === 'pro' && telegramConn && (
+        <TelegramReminders habits={habits} initialReminders={telegramReminders} />
+      )}
 
       {/* Bottom Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

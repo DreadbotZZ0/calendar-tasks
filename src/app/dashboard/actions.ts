@@ -337,6 +337,8 @@ export async function disconnectTelegram() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const admin = createAdminClient()
+
   const { data: conn } = await supabase
     .from('telegram_connections')
     .select('qstash_message_id')
@@ -350,7 +352,120 @@ export async function disconnectTelegram() {
     }).catch(() => null)
   }
 
+  // Cancel all reminder QStash messages
+  const { data: reminders } = await admin
+    .from('telegram_reminders')
+    .select('qstash_message_id')
+    .eq('user_id', user.id)
+    .not('qstash_message_id', 'is', null)
+
+  if (reminders) {
+    await Promise.all(reminders.map(r =>
+      fetch(`https://qstash.upstash.io/v2/messages/${r.qstash_message_id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${process.env.QSTASH_TOKEN}` },
+      }).catch(() => null)
+    ))
+  }
+
+  await admin.from('telegram_reminders').delete().eq('user_id', user.id)
   await supabase.from('telegram_connections').delete().eq('user_id', user.id)
   revalidatePath('/dashboard/settings')
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
+export async function getTelegramReminders() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+  const admin = createAdminClient()
+  const { data } = await admin
+    .from('telegram_reminders')
+    .select('id, habit_id, notify_time, is_recurring, habits(title, emoji)')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: true })
+  return (data ?? []) as {
+    id: string
+    habit_id: string | null
+    notify_time: string
+    is_recurring: boolean
+    habits: { title: string; emoji?: string | null } | null
+  }[]
+}
+
+export async function addReminder(habitId: string | null, notifyTime: string, isRecurring: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: license } = await supabase
+    .from('licenses')
+    .select('plan')
+    .eq('user_id', user.id)
+    .single()
+  if (license?.plan !== 'pro') return { error: 'Требуется Pro подписка' }
+
+  const admin = createAdminClient()
+  const { data: conn } = await admin
+    .from('telegram_connections')
+    .select('chat_id')
+    .eq('user_id', user.id)
+    .single()
+  if (!conn) return { error: 'Telegram не подключён' }
+
+  const { data: reminder, error: insertError } = await admin
+    .from('telegram_reminders')
+    .insert({ user_id: user.id, habit_id: habitId || null, notify_time: notifyTime, is_recurring: isRecurring })
+    .select('id')
+    .single()
+  if (insertError || !reminder) return { error: insertError?.message ?? 'Ошибка создания' }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL!
+  const delay = secondsUntilNextTime(notifyTime)
+  const res = await fetch(`https://qstash.upstash.io/v2/publish/${appUrl}/api/telegram/notify`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.QSTASH_TOKEN}`,
+      'Content-Type': 'application/json',
+      'Upstash-Delay': `${delay}s`,
+    },
+    body: JSON.stringify({ userId: user.id, reminderId: reminder.id }),
+  })
+  const qdata = await res.json()
+
+  if (qdata.messageId) {
+    await admin
+      .from('telegram_reminders')
+      .update({ qstash_message_id: qdata.messageId })
+      .eq('id', reminder.id)
+  }
+
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
+export async function deleteReminder(reminderId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const admin = createAdminClient()
+  const { data: reminder } = await admin
+    .from('telegram_reminders')
+    .select('qstash_message_id')
+    .eq('id', reminderId)
+    .eq('user_id', user.id)
+    .single()
+
+  if (reminder?.qstash_message_id) {
+    await fetch(`https://qstash.upstash.io/v2/messages/${reminder.qstash_message_id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${process.env.QSTASH_TOKEN}` },
+    }).catch(() => null)
+  }
+
+  await admin.from('telegram_reminders').delete().eq('id', reminderId).eq('user_id', user.id)
+  revalidatePath('/dashboard')
   return { success: true }
 }
