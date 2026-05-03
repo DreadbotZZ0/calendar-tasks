@@ -361,15 +361,11 @@ export default function PlantWidget({
         {/* Info */}
         <div className="flex-1 text-center sm:text-left space-y-1">
           <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
-            <h3 className="font-bold text-slate-900 dark:text-white text-lg">
-              {isDead ? 'Питомец погиб' : stage.name}
-            </h3>
+            <PetNameForm initialName={petName ?? null} stageName={stage.name} isDead={isDead} />
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${pctBadgeClass}`}>
               {displayPct}%
             </span>
           </div>
-
-          <PetNameForm initialName={petName ?? null} stageName={stage.name} />
 
           <p className="text-sm text-slate-500 dark:text-slate-400 pt-1">
             {!hasHabits

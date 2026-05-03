@@ -2,7 +2,15 @@
 import { useState } from 'react'
 import { setPetName } from './actions'
 
-export default function PetNameForm({ initialName, stageName }: { initialName: string | null; stageName: string }) {
+export default function PetNameForm({
+  initialName,
+  stageName,
+  isDead,
+}: {
+  initialName: string | null
+  stageName: string
+  isDead?: boolean
+}) {
   const [name, setName] = useState(initialName ?? '')
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -16,28 +24,38 @@ export default function PetNameForm({ initialName, stageName }: { initialName: s
     setEditing(false)
   }
 
+  if (isDead) {
+    return <span className="font-bold text-slate-900 dark:text-white text-lg">Питомец погиб</span>
+  }
+
   if (editing) {
     return (
-      <div className="flex items-center gap-2 mt-1">
+      <div className="flex items-center gap-2">
         <input
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
           maxLength={24}
-          placeholder="Имя питомца"
-          className="text-sm border border-slate-300 dark:border-slate-600 rounded px-2 py-0.5 bg-white dark:bg-slate-700 text-slate-900 dark:text-white w-36 outline-none focus:border-indigo-400"
+          placeholder={stageName}
+          className="font-bold text-lg border-b-2 border-indigo-400 bg-transparent text-slate-900 dark:text-white outline-none w-40"
           autoFocus
-          onKeyDown={e => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') setEditing(false) }}
+          onKeyDown={e => {
+            if (e.key === 'Enter') handleSave()
+            if (e.key === 'Escape') setEditing(false)
+          }}
         />
         <button
           onClick={handleSave}
           disabled={saving}
-          className="text-xs text-indigo-500 font-medium hover:text-indigo-700 disabled:opacity-50"
+          className="text-sm text-indigo-500 font-semibold hover:text-indigo-700 disabled:opacity-50"
         >
-          {saving ? '...' : 'Сохранить'}
+          {saving ? '...' : 'OK'}
         </button>
-        <button onClick={() => setEditing(false)} className="text-xs text-slate-400 hover:text-slate-600">
-          Отмена
+        <button
+          onClick={() => setEditing(false)}
+          className="text-sm text-slate-400 hover:text-slate-600"
+        >
+          ✕
         </button>
       </div>
     )
@@ -46,10 +64,14 @@ export default function PetNameForm({ initialName, stageName }: { initialName: s
   return (
     <button
       onClick={() => setEditing(true)}
-      className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors mt-0.5 group"
+      title="Нажми, чтобы дать имя питомцу"
+      className="font-bold text-slate-900 dark:text-white text-lg hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors text-left group"
     >
-      <span className="font-medium">{displayName}</span>
-      <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: '14px' }}>
+      {displayName}
+      <span
+        className="material-symbols-outlined ml-1 opacity-0 group-hover:opacity-40 transition-opacity align-middle"
+        style={{ fontSize: '14px' }}
+      >
         edit
       </span>
     </button>
