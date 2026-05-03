@@ -11,6 +11,60 @@
   --color-primary-fixed-dim: #c3c0ff;
 }
 
+@keyframes plant-blink {
+  0%, 85%, 100% { transform: scaleY(1); }
+  90% { transform: scaleY(0.08); }
+}
+@keyframes plant-sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes plant-bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes plant-float {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+@keyframes plant-sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(180deg); }
+}
+@keyframes petal-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.plant-eye {
+  animation: plant-blink 4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+.plant-eye-delay {
+  animation: plant-blink 4s ease-in-out infinite 0.1s;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+.plant-sway {
+  animation: plant-sway 3s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.plant-bounce {
+  animation: plant-bounce 2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.plant-float {
+  animation: plant-float 2.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.plant-sparkle-1 { animation: plant-sparkle 2s ease-in-out infinite; }
+.plant-sparkle-2 { animation: plant-sparkle 2s ease-in-out infinite 0.6s; }
+.plant-sparkle-3 { animation: plant-sparkle 2s ease-in-out infinite 1.2s; }
+.petal-spin { animation: petal-spin 8s linear infinite; transform-box: fill-box; transform-origin: center center; }
+
 @keyframes pop {
   0%   { transform: scale(1); }
   35%  { transform: scale(1.45); }
