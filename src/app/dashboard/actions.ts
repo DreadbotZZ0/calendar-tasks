@@ -197,9 +197,11 @@ export async function activateLicense(licenseKey: string) {
     return { error: 'Недействительный ключ. Проверь правильность ввода.' }
   }
 
+  const expiresAt = new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString()
+
   const { error } = await supabase
     .from('licenses')
-    .upsert({ user_id: user.id, license_key: licenseKey.trim(), plan }, { onConflict: 'user_id' })
+    .upsert({ user_id: user.id, license_key: licenseKey.trim(), plan, expires_at: expiresAt }, { onConflict: 'user_id' })
 
   if (error) return { error: error.message }
 
@@ -215,11 +217,12 @@ export async function addHabit(title: string, color: string = 'bg-indigo-500', e
 
   const { data: license } = await supabase
     .from('licenses')
-    .select('plan')
+    .select('plan, expires_at')
     .eq('user_id', user.id)
     .single()
 
-  if (!license) {
+  const isExpired = license?.expires_at ? new Date(license.expires_at) < new Date() : false
+  if (!license || isExpired) {
     return { error: 'Требуется подписка. Приобрети план для добавления привычек.' }
   }
 
@@ -401,10 +404,11 @@ export async function addReminder(habitId: string | null, notifyTime: string, is
 
   const { data: license } = await supabase
     .from('licenses')
-    .select('plan')
+    .select('plan, expires_at')
     .eq('user_id', user.id)
     .single()
-  if (license?.plan !== 'pro') return { error: 'Требуется Pro подписка' }
+  const isExpiredR = license?.expires_at ? new Date(license.expires_at) < new Date() : false
+  if (license?.plan !== 'pro' || isExpiredR) return { error: 'Требуется активная Pro подписка' }
 
   const admin = createAdminClient()
   const { data: conn } = await admin

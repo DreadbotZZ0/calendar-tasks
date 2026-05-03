@@ -23,7 +23,8 @@ export default async function SettingsPage() {
     day: 'numeric', month: 'long', year: 'numeric'
   })
   const license = await getLicense()
-  const isPro = license?.plan === 'pro'
+  const isExpired = license?.expires_at ? new Date(license.expires_at) < new Date() : false
+  const isPro = license?.plan === 'pro' && !isExpired
   const telegramConn = await getTelegramConnection()
 
   return (
@@ -71,7 +72,12 @@ export default async function SettingsPage() {
         {!isPro && (
           <p className="text-sm text-slate-500 dark:text-slate-400">До 5 привычек · 1 месяц истории</p>
         )}
-        <LicenseSection isPro={isPro} plan={license?.plan ?? undefined} />
+        <LicenseSection
+          isPro={isPro}
+          plan={license?.plan ?? undefined}
+          expiresAt={license?.expires_at ?? null}
+          isExpired={isExpired}
+        />
       </div>
 
       {/* Telegram notifications — Pro only */}
