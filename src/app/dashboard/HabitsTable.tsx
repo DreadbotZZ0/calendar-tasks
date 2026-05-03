@@ -126,7 +126,7 @@ export default function HabitsTable({
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden relative">
       <div className="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-700">
-        <h2 className="font-bold text-slate-800 dark:text-white">Твои привычки</h2>
+        <h2 className="font-bold text-slate-800 dark:text-white">Твои привычки / задачи</h2>
         <button
           onClick={() => setIsAdding(!isAdding)}
           className="flex items-center gap-1 text-sm font-medium text-[var(--color-primary-container)] hover:text-[var(--color-primary)] transition-colors"

@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       chat_id: conn.chat_id,
-      text: '🔥 <b>Привет!</b> Не забудь отметить свои привычки сегодня.',
+      text: '🔥 <b>Привет!</b> Не забудь отметить свои привычки и задачи сегодня.',
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: [[{ text: '✅ Открыть дашборд', url: `${APP_URL}/dashboard` }]],

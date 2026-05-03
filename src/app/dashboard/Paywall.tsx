@@ -15,7 +15,7 @@ const PLANS = {
     name: 'Pro',
     price: '$2',
     url: 'https://aronfatima.gumroad.com/l/bzynnz',
-    features: ['Безлимит привычек', 'Полная история'],
+    features: ['Безлимит привычек и задач', 'Полная история', 'Уведомления в Telegram'],
     popular: true,
   },
 }

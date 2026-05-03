@@ -36,7 +36,7 @@ export default function LicenseSection({ isPro, plan }: { isPro: boolean; plan?:
         </div>
         <div>
           <p className="font-semibold text-green-600 dark:text-green-400">Pro активирован</p>
-          <p className="text-xs text-slate-400 dark:text-slate-500">Безлимитные привычки · полная история</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">Безлимитные привычки и задачи · полная история · уведомления в Telegram</p>
         </div>
       </div>
     )

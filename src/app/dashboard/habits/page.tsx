@@ -7,8 +7,8 @@ export default async function HabitsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Мои привычки</h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-1">Управляй списком привычек, меняй названия и цвета.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Мои привычки / задачи</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">Управляй списком привычек и задач, меняй названия и цвета.</p>
       </div>
       <HabitsManager initialHabits={habits} />
     </div>

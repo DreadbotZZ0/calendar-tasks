@@ -133,7 +133,7 @@ export default function Home() {
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
-                  Безлимитные привычки
+                  Безлимитные привычки и задачи
                 </li>
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
@@ -141,7 +141,7 @@ export default function Home() {
                 </li>
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
-                  Экспорт данных
+                  Уведомления в Telegram для задач и планов
                 </li>
                 <li className="flex items-center gap-3 text-slate-300">
                   <span className="material-symbols-outlined text-[var(--color-primary-fixed-dim)] text-xl">check</span>
