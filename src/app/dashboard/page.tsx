@@ -116,9 +116,16 @@ export default async function DashboardPage({
   const isExpired = license?.expires_at ? new Date(license.expires_at) < new Date() : false
   const isPro = license?.plan === 'pro' && !isExpired
 
-  const plantPct = habits.length > 0
-    ? Math.min(100, Math.round(allCompletionsForStreak.length / (habits.length * 30) * 100))
-    : 0
+  // Count days where ALL habits were completed (1 perfect day = 1 point out of 30)
+  const completionsByDate = new Map<string, Set<string>>()
+  for (const c of allCompletionsForStreak) {
+    if (!completionsByDate.has(c.date)) completionsByDate.set(c.date, new Set())
+    completionsByDate.get(c.date)!.add(c.habit_id)
+  }
+  const perfectDays = [...completionsByDate.values()].filter(
+    ids => habits.every(h => ids.has(h.id))
+  ).length
+  const plantPct = habits.length > 0 ? Math.min(100, Math.round(perfectDays / 30 * 100)) : 0
   const MAX_WEEK_BASIC = -4 // ~28 days back
 
   const canGoBack = isPro || weekOffset > MAX_WEEK_BASIC
