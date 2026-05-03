@@ -19,7 +19,7 @@ export default function Home() {
             </nav>
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              <Link className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium hidden md:block transition-colors" href="/login">Войти</Link>
+              <Link className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium transition-colors text-sm" href="/login">Войти</Link>
               <Link className="bg-[var(--color-primary-container)] text-white hover:bg-[var(--color-primary)] hover:-translate-y-0.5 transition-all duration-200 px-4 py-2 rounded-lg font-medium text-sm" href="/register">
                 Регистрация
               </Link>
